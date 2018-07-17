@@ -1,3 +1,6 @@
 
 # Ignore Vagrant's files.
 .vagrant/
+
+# Ignore Composer's files.
+vendor/
