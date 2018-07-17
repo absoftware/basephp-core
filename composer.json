@@ -1,0 +1,27 @@
+{
+  "name": "abrepos/basephp-core",
+  "version": "0.0.0",
+  "type": "library",
+  "description": "BasePHP Core delivers core functionality and base classes for BasePHP Framework.",
+  "keywords": [
+    "PHP",
+    "framework",
+    "base",
+    "object-oriented",
+    "REST",
+    "RESTful",
+    "website",
+    "domain",
+    "multi-domain"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ariel Bogdziewicz",
+      "role": "Owner"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0"
+  }
+}
