@@ -3,19 +3,11 @@ namespace Base\Core;
 
 // TODO: Write unit tests.
 class Router
-{
-    protected $methods = ["DELETE", "GET", "POST", "PUT"];
-    
+{    
     protected $routes = [];
     
     public function addRoute(string $method, string $route, string $callback)
-    {
-        if (!in_array($method, $this->methods))
-        {
-            // TODO: Put here specific type of exception.
-            throw new Exception("Unknown method '{$method}'.");
-        }
-        
+    {        
         $routeId = $method . ":" . $route;
         
         if (isset($this->routes[$routeId]))
