@@ -1,6 +1,8 @@
 <?php
 namespace Base\Core;
 
+use Base\Core\Exceptions\ArgumentException;
+
 class Ports
 {
     protected $httpPorts = [80];

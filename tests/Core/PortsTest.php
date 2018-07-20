@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Core;
 
-use Base\Core\ArgumentException;
+use Base\Core\Exceptions\ArgumentException;
 use Base\Core\Ports;
 use PHPUnit\Framework\TestCase;
 

@@ -35,6 +35,11 @@ class Request
         return false;
     }
     
+    function isAjax()
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+    }
+    
     public function protocol()
     {
         return $this->isHttps() ? "https://" : "http://";
