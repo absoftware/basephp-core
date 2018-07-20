@@ -63,7 +63,14 @@ class Application
             
             // TODO: Handle generic exception.
         }
-        catch (Throwable $t)
+        catch (\Exception $t)
+        {
+            // Clean output buffer.
+            ob_end_clean();
+            
+            // TODO: Handle unexpected exception.
+        }
+        catch (\Throwable $t)
         {
             // Clean output buffer.
             ob_end_clean();
