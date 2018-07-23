@@ -1,6 +1,5 @@
 {
     "name": "abrepos/basephp-core",
-    "version": "0.0.0",
     "type": "library",
     "description": "BasePHP Core delivers core functionality and base classes for BasePHP Framework.",
     "keywords": [
