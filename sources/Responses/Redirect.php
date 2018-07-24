@@ -1,5 +1,5 @@
 <?php
-namespace Base\Core\Responses;
+namespace Base\Responses;
 
 class Redirect implements Response
 {
@@ -12,11 +12,11 @@ class Redirect implements Response
     
     public function get()
     {
-        return $this->url;
+        return "";
     }
     
-    public function output()
+    public function display()
     {
-        header("Location: " . $this->get());
+        header("Location: " . $this->url);
     }
 }

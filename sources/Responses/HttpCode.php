@@ -1,5 +1,5 @@
 <?php
-namespace Base\Core\Responses;
+namespace Base\Responses;
 
 class HttpCode implements Response
 {
@@ -12,11 +12,11 @@ class HttpCode implements Response
     
     public function get()
     {
-        return $this->httpCode;
+        return "";
     }
     
     public function output()
     {
-        http_response_code($this->get());
+        http_response_code($this->httpCode);
     }
 }

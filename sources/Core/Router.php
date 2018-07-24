@@ -1,6 +1,8 @@
 <?php
 namespace Base\Core;
 
+use Base\Exceptions\Exception;
+
 // TODO: Write unit tests.
 class Router
 {    

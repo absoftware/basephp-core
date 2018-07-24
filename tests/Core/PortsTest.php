@@ -1,8 +1,8 @@
 <?php
 namespace Tests\Core;
 
-use Base\Core\Exceptions\ArgumentException;
 use Base\Core\Ports;
+use Base\Exceptions\ArgumentException;
 use PHPUnit\Framework\TestCase;
 
 final class PortsTest extends TestCase

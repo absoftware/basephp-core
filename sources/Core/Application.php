@@ -1,8 +1,10 @@
 <?php
 namespace Base\Core;
 
-use Base\Core\Exceptions\Exception;
-use Base\Core\Exceptions\InternalException;
+use Base\Exceptions\Exception;
+use Base\Exceptions\InternalError;
+use Base\Exceptions\NotFound;
+use Base\Responses\Response;
 
 class Application
 {
@@ -42,14 +44,14 @@ class Application
             }
             
             // Put response to output buffer.
-            $response->output();
+            $response->display();
             
             // TODO: Close all resources before flush. In case of errors we will see this in output buffer.
             
             // Flush output buffer.
             ob_end_flush();
         }
-        catch (InternalException $e)
+        catch (InternalError $e)
         {
             // Clean output buffer.
             ob_end_clean();

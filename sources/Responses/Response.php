@@ -1,5 +1,5 @@
 <?php
-namespace Base\Core\Responses;
+namespace Base\Responses;
 
 interface Response
 {
@@ -13,5 +13,5 @@ interface Response
      * Renders output into output buffer.
      * If something goes wrong it will throw exception.
      */
-    function output();
+    function display();
 }

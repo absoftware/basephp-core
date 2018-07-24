@@ -1,7 +1,7 @@
 <?php
 namespace Base\Core;
 
-use Base\Core\Exceptions\ArgumentException;
+use Base\Exceptions\ArgumentException;
 
 class Ports
 {
