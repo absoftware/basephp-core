@@ -1,17 +1,21 @@
 <?php
 namespace Base\Responses;
 
+/**
+ * Interface Response represents any response sent back to client.
+ * @package Base\Responses
+ */
 interface Response
 {
     /**
-     * Returns data which represents response.
-     * If something goes wrong it will throw exception.
+     * Returns body of response as string.
+     * It may be html code, text plain or binary content of image.
+     * @return string Body of response.
      */
-    function get();
-    
+    function body(): string;
+
     /**
-     * Renders output into output buffer.
-     * If something goes wrong it will throw exception.
+     * Sets HTTP headers and renders body of response into output buffer.
      */
-    function display();
+    function display(): void;
 }
