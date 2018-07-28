@@ -3,29 +3,58 @@ namespace Base\Core;
 
 use Base\Exceptions\Exception;
 use Base\Exceptions\InternalError;
-use Base\Exceptions\NotFound;
 use Base\Responses\Response;
 
+/**
+ * Class Application is main class of BasePHP Framework.
+ * It creates all dependencies including router and request objects,
+ * creates controller and executes its code,
+ * renders response returned by controller and checks exceptions.
+ * @package Base\Core
+ */
 class Application
 {
+    /**
+     * Delegate of application must be implemented by client.
+     * @var ApplicationDelegate
+     */
     protected $delegate;
+
+    /**
+     * Instance of configuration. It must be delivered by client.
+     * @var Config
+     */
     protected $config;
+
+    /**
+     * Request.
+     * @var Request
+     */
     protected $request;
-    
+
+    /**
+     * Application constructor.
+     * @param ApplicationDelegate $delegate
+     * @param Config $config
+     */
     public function __construct(ApplicationDelegate $delegate, Config $config)
     {
         $this->delegate = $delegate;
         $this->config = $config;
         $this->request = new Request();
     }
-    
-    public function run()
-    {        
+
+    /**
+     * Executes request and renders response returned by controller.
+     * Handles exceptions thrown by controller.
+     */
+    public function run(): void
+    {
         try
         {
             // Open output buffer.
             ob_start();
-            
+
             // Create instance of router.
             $router = new Router();
             
@@ -36,11 +65,11 @@ class Application
             // or custom assumptions of project so it is delegated to client.
             $currentPath = $this->delegate->currentRequestPath($this->request);
             
-            // Execute path and get response from controler.
-            $response = $router->execute($currentPath);
+            // Execute path and get response from controller.
+            $response = $router->execute($this->request->method(), $currentPath);
             if (!$response instanceof Response)
             {
-                throw new InternalException("Response doesn't conform to Response interface.");
+                throw new InternalError("Response doesn't conform to Response interface.");
             }
             
             // Put response to output buffer.
