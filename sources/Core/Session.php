@@ -27,6 +27,12 @@ class Session
     protected $sessionTime = 3600;
 
     /**
+     * Domain for session.
+     * @var string|null
+     */
+    protected $domain = null;
+
+    /**
      * Session constructor.
      * @param int $sessionTime
      *      Session time in seconds.
@@ -41,6 +47,7 @@ class Session
         session_set_cookie_params(0, '/', $domain);
         session_start();
         $this->sessionId = session_id();
+        $this->domain = $domain;
     }
 
     /**
@@ -104,5 +111,20 @@ class Session
     public function unset(string $name): void
     {
         unset($_SESSION[$name]);
+    }
+
+    /**
+     * Sets cookie.
+     * @param string $name Name of cookie.
+     * @param string $value Value of cookie.
+     * @param int $lifeTime Life time of cookie.
+     * @param bool $currentDomainOnly
+     *      Allows to use cookie only for current domain
+     *      even if session was created for wildcard domain.
+     */
+    public function setCookie(string $name, string $value, int $lifeTime = 31536000, bool $currentDomainOnly = false)
+    {
+        $domain = $currentDomainOnly ? null : $this->domain;
+        setcookie($name, $value, time() + $lifeTime, '/', $domain);
     }
 }

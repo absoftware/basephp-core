@@ -80,8 +80,21 @@ class Application
             // or custom assumptions of project so it is delegated to client.
             $currentPath = $this->delegate->currentRequestPath($this->request);
             
-            // Execute path and get response from controller.
-            $response = $router->execute($this->request->method(), $currentPath);
+            // Search callback for current request.
+            $callback = $router->callback($this->request->method(), $currentPath);
+
+            // Extract callback elements.
+            $className = $callback[0];
+            $methodName = $callback[1];
+            $params = $callback[2];
+
+            // Create controller.
+            $controller = new $className();
+            call_user_func_array([$controller, "setRequestObject"], [$this->request]);
+            call_user_func_array([$controller, "setSessionObject"], [$this->session]);
+
+            // Execute method of controller.
+            $response = call_user_func_array([$controller, $methodName], $params);
             if (!$response instanceof Response)
             {
                 throw new InternalError("Response doesn't conform to Response interface.");

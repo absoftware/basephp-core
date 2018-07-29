@@ -39,15 +39,22 @@ abstract class Controller
 
     /**
      * Controller constructor.
-     * @param Request|null $request
-     * @param Template|null $template
-     * @param Session|null $session
      */
-    public function __construct(Request $request = null, Template $template = null, Session $session = null)
+    public function __construct()
     {
-        $this->request = $request ?? new Request();
-        $this->template = $template ?? new PhpTemplate();
-        $this->session = $session ?? new Session();
+        $this->request = null;
+        $this->template = null;
+        $this->session = null;
+    }
+
+    public function setRequestObject(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    public function setSessionObject(Session $session)
+    {
+        $this->session = $session;
     }
 
     protected function get($name)
@@ -85,10 +92,9 @@ abstract class Controller
         return $this->request->cookie($name);
     }
     
-    protected function setCookie($name, $value)
+    protected function setCookie($name, $value, int $lifeTime = 31536000, bool $currentDomainOnly = false)
     {
-        // TODO: Shouldn't be it response?
-        //$this->request->setCookie($name, $value);
+        $this->session->setCookie($name, $value, $lifeTime, $currentDomainOnly);
     }
     
     protected function session($name)

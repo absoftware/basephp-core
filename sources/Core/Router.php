@@ -12,31 +12,65 @@ use Base\Exceptions\InternalError;
 use Base\Exceptions\NotFound;
 use Base\Tools\HttpRequest;
 
-// TODO: Write unit tests.
+/**
+ * Class Router.
+ * @package Base\Core
+ */
 class Router
 {
+    /**
+     * Collection of registered routes. Routes are kept here in string format.
+     * @var array
+     */
     protected $routes = [];
 
+    /**
+     * Adds route for DELETE requests.
+     * @param string $route
+     * @param string $callback
+     */
     public function delete(string $route, string $callback)
     {
         $this->add(HttpRequest::DELETE, $route, $callback);
     }
 
+    /**
+     * Adds route for GET requests.
+     * @param string $route
+     * @param string $callback
+     */
     public function get(string $route, string $callback)
     {
         $this->add(HttpRequest::GET, $route, $callback);
     }
 
+    /**
+     * Adds route for POST requests.
+     * @param string $route
+     * @param string $callback
+     */
     public function post(string $route, string $callback)
     {
         $this->add(HttpRequest::POST, $route, $callback);
     }
 
+    /**
+     * Adds route for PUT requests.
+     * @param string $route
+     * @param string $callback
+     */
     public function put(string $route, string $callback)
     {
         $this->add(HttpRequest::PUT, $route, $callback);
     }
-    
+
+    /**
+     * Adds route for any requests.
+     * @param string $method
+     * @param string $route
+     * @param string $callback
+     * @throws InternalError
+     */
     public function add(string $method, string $route, string $callback)
     {
         $routeId = $method . ":" . $route;
@@ -52,8 +86,16 @@ class Router
             "callback" => $callback
         ];
     }
-    
-    public function execute(string $method, string $path)
+
+    /**
+     * Searches callback for given method and path.
+     * @param string $method
+     * @param string $path
+     * @return array First element is name of controller, second is name of method, third is an array of parameters.
+     * @throws InternalError
+     * @throws NotFound
+     */
+    public function callback(string $method, string $path)
     {
         $executeRouteId = false;
         $params = false;
@@ -87,6 +129,6 @@ class Router
         
         $className = $callbackArray[0];
         $methodName = $callbackArray[1];
-        return call_user_func_array([new $className, $methodName], $params);
+        return [$className, $methodName, $params];
     }
 }

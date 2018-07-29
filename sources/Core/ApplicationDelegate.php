@@ -54,7 +54,7 @@ interface ApplicationDelegate
      * @param Request $request
      * @return string
      */
-    function sessionDomain(Request $request): string;
+    function sessionDomain(Request $request): ?string;
 
     /**
      * Returns response for exception which is defined by BasePHP Core.

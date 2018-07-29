@@ -8,23 +8,46 @@
  */
 namespace Base\Core;
 
+use Base\Exceptions\ArgumentException;
+
+/**
+ * Class Route.
+ * @package Base\Core
+ */
 class Route
 {
+    /**
+     * Allowed characters in parameter of path.
+     * @var string
+     */
     protected $allowedParamCharacters = '[a-zA-Z0-9\_\-]+';
-    
+
+    /**
+     * Route as string.
+     * @var string
+     */
     protected $route;
-    
+
+    /**
+     * Route constructor.
+     * @param string $route
+     * @throws ArgumentException
+     */
     public function __construct(string $route)
     {
         if (preg_match('/[^-:\/_{}()a-zA-Z\d]/', $route))
         {
-            // TODO: Use desired type of exception.
-            throw new Exception("Route '{$route}' is invalid.");
+            throw new ArgumentException("route", "Route '{$route}' is invalid.");
         }
         
         $this->route = $route;
     }
-    
+
+    /**
+     * Returns PHP regex for route.
+     * @param bool $caseSensitive
+     * @return string
+     */
     public function regex(bool $caseSensitive = false)
     {
         // Replace "{parameter}" with "(?<parameter>[a-zA-Z0-9\_\-]+)".
@@ -38,7 +61,15 @@ class Route
         $caseSensitiveFlag = $caseSensitive ? "" : "i";
         return "@^" . $regex . "$@D" . $caseSensitiveFlag;
     }
-    
+
+    /**
+     * Matches route to given path.
+     * @param string $path
+     * @param bool $caseSensitive
+     * @return array|bool
+     *      Returns matched parameters as array or false if path doesn't match to route.
+     *      Empty array means empty list of parameters.
+     */
     public function match(string $path, bool $caseSensitive = false)
     {
         $result = preg_match($this->regex($caseSensitive), $path, $matches);
