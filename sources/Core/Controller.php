@@ -317,4 +317,14 @@ abstract class Controller
     {
         return new Redirect($url);
     }
+
+    /**
+     * Returns HTTP code without body.
+     * @param int $httpCode
+     * @return HttpCode
+     */
+    protected function httpCode(int $httpCode): HttpCode
+    {
+        return new HttpCode($httpCode);
+    }
 }
