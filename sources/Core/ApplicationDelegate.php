@@ -7,6 +7,19 @@ use Base\Responses\Response;
 interface ApplicationDelegate
 {
     /**
+     * It is good place to open common resources for all controllers
+     * like database connection or other settings. They should be owned
+     * by application delegate.
+     */
+    function open(): void;
+
+    /**
+     * Returns configuration of ports for normal and secure connections.
+     * @return Ports
+     */
+    function ports(): Ports;
+
+    /**
      * Registers all routes for project.
      * @param Router $router
      *      Router object which has to be used to register routes.
@@ -39,4 +52,9 @@ interface ApplicationDelegate
      * @return Response
      */
     function responseForThrowable(Request $request, \Throwable $throwable): Response;
+
+    /**
+     * It is good place to close common resources which are owned by application delegate.
+     */
+    function close(): void;
 }

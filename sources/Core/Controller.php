@@ -42,18 +42,18 @@ abstract class Controller
         $this->template = $template ?? new PhpTemplate();
         $this->session = $session ?? new Session();
     }
-    
+
     protected function get($name)
     {
         return $this->request->get($name);
     }
-    
+
     protected function requiredGet($name)
     {
         $param = $this->request->get($name);
         if (!$param)
         {
-            throw new BadRequest();
+            throw new BadRequest("Missing GET param '$name'.");
         }
         return $param;
     }
@@ -68,7 +68,7 @@ abstract class Controller
         $param = $this->request->post($name);
         if (!$param)
         {
-            throw new BadRequest();
+            throw new BadRequest("Missing POST param '$name'.");
         }
         return $param;
     }

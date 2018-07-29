@@ -41,7 +41,7 @@ class Application
     {
         $this->delegate = $delegate;
         $this->config = $config;
-        $this->request = new Request();
+        $this->request = new Request($this->delegate->ports());
     }
 
     /**
@@ -52,6 +52,9 @@ class Application
     {
         try
         {
+            // Open client's resources.
+            $this->delegate->open();
+
             // Create instance of router.
             $router = new Router();
             
@@ -84,12 +87,7 @@ class Application
         }
         finally
         {
-            $this->close();
+            $this->delegate->close();
         }
-    }
-
-    protected function close()
-    {
-
     }
 }
