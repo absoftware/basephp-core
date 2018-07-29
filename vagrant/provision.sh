@@ -1,5 +1,11 @@
 #!/bin/bash
-
+#
+# Project: BasePHP Core
+# File: provision.sh created by Ariel Bogdziewicz on 29/07/2018
+# Author: Ariel Bogdziewicz
+# Copyright: Copyright © 2018 Ariel Bogdziewicz. All rights reserved.
+# License: MIT
+#
 export DEBIAN_FRONTEND=noninteractive
 
 update_apt_get() {

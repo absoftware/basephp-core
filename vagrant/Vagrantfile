@@ -1,6 +1,12 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-
+#
+# Project: BasePHP Core
+# File: Vagrantfile created by Ariel Bogdziewicz on 29/07/2018
+# Author: Ariel Bogdziewicz
+# Copyright: Copyright © 2018 Ariel Bogdziewicz. All rights reserved.
+# License: MIT
+#
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
