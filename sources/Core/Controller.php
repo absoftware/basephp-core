@@ -9,6 +9,11 @@
 namespace Base\Core;
 
 use Base\Exceptions\BadRequest;
+use Base\Responses\Html;
+use Base\Responses\HttpCode;
+use Base\Responses\Json;
+use Base\Responses\Raw;
+use Base\Responses\Redirect;
 use Base\Templates\Template;
 
 /**
@@ -264,5 +269,52 @@ abstract class Controller
             $templateFile = $directory . basename($path, ".php") . $this->template->fileExtension();
         }
         return $this->template->fetch($templateFile);
+    }
+
+    /**
+     * Returns raw response.
+     * @param string $output
+     * @param string $contentType
+     * @param int $httpCode
+     * @param string $charset
+     * @return Raw
+     */
+    protected function raw(string $output, string $contentType = "text/plain", int $httpCode = 200, string $charset = "utf-8"): Raw
+    {
+        return new Raw($output, $contentType, $httpCode, $charset);
+    }
+
+    /**
+     * Returns HTML response.
+     * @param string $html
+     * @param int $httpCode
+     * @param string $charset
+     * @return Html
+     */
+    protected function html(string $html, int $httpCode = 200, string $charset = "utf-8"): Html
+    {
+        return new Html($html, $httpCode, $charset);
+    }
+
+    /**
+     * Returns JSON response.
+     * @param array $data
+     * @param int $httpCode
+     * @param string $charset
+     * @return Json
+     */
+    protected function json(array $data, int $httpCode = 200, string $charset = "utf-8"): Json
+    {
+        return new Json($data, $httpCode, $charset);
+    }
+
+    /**
+     * Returns redirect response.
+     * @param string $url
+     * @return Redirect
+     */
+    protected function redirect(string $url): Redirect
+    {
+        return new Redirect($url);
     }
 }
