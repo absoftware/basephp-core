@@ -43,7 +43,7 @@ class ArgumentException extends InternalError
     {
         if ($this->argumentName)
         {
-            return __CLASS__ . ": ['{$this->argumentName}', {$this->code}]: {$this->message}\n";
+            return get_class($this) . " ['{$this->argumentName}', {$this->code}]: '{$this->message}' in {$this->file}({$this->line})\n{$this->getTraceAsString()}\n";
         }
         return parent::__toString();
     }
