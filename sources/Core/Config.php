@@ -14,5 +14,15 @@ namespace Base\Core;
  */
 interface Config
 {
-    
+    /**
+     * Session time in seconds.
+     * @return int
+     */
+    function sessionTime(): int;
+
+    /**
+     * Configuration of ports for normal and secure connections.
+     * @return Ports
+     */
+    function ports(): Ports;
 }

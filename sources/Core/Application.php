@@ -40,15 +40,23 @@ class Application
     protected $request;
 
     /**
+     * Session.
+     * @var Session
+     */
+    protected $session;
+
+    /**
      * Application constructor.
      * @param ApplicationDelegate $delegate
      * @param Config $config
+     * @param Session $session
      */
-    public function __construct(ApplicationDelegate $delegate, Config $config)
+    public function __construct(ApplicationDelegate $delegate, Config $config, Session $session = null)
     {
         $this->delegate = $delegate;
         $this->config = $config;
-        $this->request = new Request($this->delegate->ports());
+        $this->request = new Request($this->config->ports());
+        $this->session = $session ?? new Session($this->config->sessionTime(), $this->delegate->sessionDomain($this->request));
     }
 
     /**
@@ -94,6 +102,7 @@ class Application
         }
         finally
         {
+            $this->session->close();
             $this->delegate->close();
         }
     }
