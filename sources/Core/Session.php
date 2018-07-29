@@ -28,13 +28,17 @@ class Session
 
     /**
      * Session constructor.
-     * @param int $sessionTime Session time in seconds.
-     * @param string $domain Specify here domain if you want share session between subdomains of given domain.
+     * @param int $sessionTime
+     *      Session time in seconds.
+     * @param string $domain
+     *      Domain with dot at the beginning like ".example.com" will share session
+     *      between all subdomains. Domain without dot at the beginning like "example.com",
+     *      "subdomain.example.com" or null will limit session only to one specific domain.
      */
     public function __construct(int $sessionTime, string $domain = null)
     {
         ini_set('session.gc_maxlifetime', $sessionTime);
-        session_set_cookie_params(0, '/', $domain ? "." . $domain : null);
+        session_set_cookie_params(0, '/', $domain);
         session_start();
         $this->sessionId = session_id();
     }
