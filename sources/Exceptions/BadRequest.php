@@ -2,19 +2,19 @@
 namespace Base\Exceptions;
 
 /**
- * Class InternalError defines critical error of code execution.
+ * Class BadRequest defines error caused by invalid request.
  * @package Base\Exceptions
  */
-class InternalError extends Exception
+class BadRequest extends Exception
 {
     /**
-     * InternalError constructor.
+     * BadRequest constructor.
      * @param string $message
      * @param int $code
      * @param \Exception|null $previous
      */
     public function __construct($message = "", $code = 0, \Exception $previous = null)
     {
-        parent::__construct($message, 500, $code, $previous);
+        parent::__construct($message, 400, $code, $previous);
     }
 }

@@ -52,9 +52,6 @@ class Application
     {
         try
         {
-            // Open output buffer.
-            ob_start();
-
             // Create instance of router.
             $router = new Router();
             
@@ -74,43 +71,25 @@ class Application
             
             // Put response to output buffer.
             $response->display();
-            
-            // TODO: Close all resources before flush. In case of errors we will see this in output buffer.
-            
-            // Flush output buffer.
-            ob_end_flush();
-        }
-        catch (InternalError $e)
-        {
-            // Clean output buffer.
-            ob_end_clean();
-            
-            // TODO: Handle internal exception.
         }
         catch (Exception $e)
         {
-            // Clean output buffer.
-            ob_end_clean();
-            
-            // TODO: Handle generic exception.
-        }
-        catch (\Exception $t)
-        {
-            // Clean output buffer.
-            ob_end_clean();
-            
-            // TODO: Handle unexpected exception.
+            $response = $this->delegate->responseForException($this->request, $e);
+            $response->display();
         }
         catch (\Throwable $t)
         {
-            // Clean output buffer.
-            ob_end_clean();
-            
-            // TODO: Handle unexpected exception.
+            $response = $this->delegate->responseForThrowable($this->request, $t);
+            $response->display();
         }
         finally
         {
-            // TODO: Close all resources.
+            $this->close();
         }
+    }
+
+    protected function close()
+    {
+
     }
 }

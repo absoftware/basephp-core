@@ -1,20 +1,46 @@
 <?php
 namespace Base\Core;
 
+use Base\Exceptions\BadRequest;
 use Base\Templates\PhpTemplate;
 use Base\Templates\Template;
 
+/**
+ * Class Controller is base class for all other controllers.
+ * It delivers all resources like request, session and templates to its derived classes.
+ * @package Base\Core
+ */
 abstract class Controller
 {
+    /**
+     * Current request.
+     * @var Request
+     */
     private $request;
+
+    /**
+     * Interface for template engine.
+     * @var Template
+     */
     private $template;
+
+    /**
+     * Current session.
+     * @var Session
+     */
     private $session;
-    
-    public function __construct(Request $request = null, Template $template = null, Session $session)
+
+    /**
+     * Controller constructor.
+     * @param Request|null $request
+     * @param Template|null $template
+     * @param Session|null $session
+     */
+    public function __construct(Request $request = null, Template $template = null, Session $session = null)
     {
         $this->request = $request ?? new Request();
         $this->template = $template ?? new PhpTemplate();
-        $this->session = $template ?? new Session();
+        $this->session = $session ?? new Session();
     }
     
     protected function get($name)
@@ -55,7 +81,7 @@ abstract class Controller
     protected function setCookie($name, $value)
     {
         // TODO: Shouldn't be it response?
-        return $this->request->setCookie($name, $value);
+        //$this->request->setCookie($name, $value);
     }
     
     protected function session($name)
@@ -65,21 +91,21 @@ abstract class Controller
     
     protected function setSession($name, $value)
     {
-        return $this->session->set($name, $value);
+        $this->session->set($name, $value);
     }
     
     protected function assign($name, $value)
     {
-        return $this->template->assign($name, $value);
+        $this->template->assign($name, $value);
     }
     
     protected function fetch(string $templateFile = null)
     {
         if (!$templateFile)
         {
-            $reflection = new ReflectionClass($this);
+            $reflection = new \ReflectionClass($this);
             $path = $reflection->getFileName();
-            $directory = dirname($path) . PATH_SEPARATOR;
+            $directory = dirname($path) . DIRECTORY_SEPARATOR;
             $templateFile = $directory . basename($path, ".php") . $this->template->fileExtension();
         }
         return $this->template->fetch($templateFile);

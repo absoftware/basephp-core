@@ -1,21 +1,44 @@
 <?php
 namespace Base\Exceptions;
 
-class ArgumentException extends Exception
+/**
+ * Class ArgumentException defines internal error related to wrong function argument.
+ * @package Base\Exceptions
+ */
+class ArgumentException extends InternalError
 {
+    /**
+     * Name of argument.
+     * @var string
+     */
     protected $argumentName = "";
-    
+
+    /**
+     * ArgumentException constructor.
+     * @param string $argumentName
+     * @param string $message
+     * @param int $code
+     * @param \Exception|null $previous
+     */
     public function __construct(string $argumentName = "", $message = "", $code = 0, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
         $this->argumentName = $argumentName;
     }
-    
+
+    /**
+     * Name of argument.
+     * @return string
+     */
     public function argumentName()
     {
         return $this->argumentName;
     }
 
+    /**
+     * Description of this exception.
+     * @return string
+     */
     public function __toString()
     {
         if ($this->argumentName)

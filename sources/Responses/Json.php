@@ -10,10 +10,10 @@ class Json extends Raw
     /**
      * Json constructor.
      * @param array $data Dictionary with response.
-     * @param string $charset Charset of response.
      * @param int $httpCode HTTP code.
+     * @param string $charset Charset of response.
      */
-    public function __construct(array $data, $charset = "utf-8", $httpCode = 200)
+    public function __construct(array $data, int $httpCode = 200, string $charset = "utf-8")
     {
         $output = json_encode($data);
         if ($output === false)
@@ -24,7 +24,7 @@ class Json extends Raw
                 "errorMessage" => json_last_error_msg()
             ]);
         }
-        parent::__construct($output, "application/json", $charset, $httpCode);
+        parent::__construct($output, "application/json", $httpCode, $charset);
     }
 
     /**

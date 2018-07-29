@@ -1,6 +1,9 @@
 <?php
 namespace Base\Core;
 
+use Base\Exceptions\Exception;
+use Base\Responses\Response;
+
 interface ApplicationDelegate
 {
     /**
@@ -20,4 +23,20 @@ interface ApplicationDelegate
      *      Current request path.
      */
     function currentRequestPath(Request $request): string;
+
+    /**
+     * Returns response for exception which is defined by BasePHP Core.
+     * @param Request $request
+     * @param Exception $exception
+     * @return Response
+     */
+    function responseForException(Request $request, Exception $exception): Response;
+
+    /**
+     * Returns response for throwable.
+     * @param Request $request
+     * @param \Throwable $throwable
+     * @return Response
+     */
+    function responseForThrowable(Request $request, \Throwable $throwable): Response;
 }

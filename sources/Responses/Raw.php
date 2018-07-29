@@ -10,22 +10,22 @@ class Raw implements Response
 {
     protected $output;
     protected $contentType;
-    protected $charset;
     protected $httpCode;
+    protected $charset;
 
     /**
      * Raw constructor.
      * @param string $output Raw output for response.
      * @param string $contentType Content type of response.
-     * @param string $charset Charset of response.
      * @param int $httpCode HTTP code.
+     * @param string $charset Charset of response.
      */
-    public function __construct(string $output, string $contentType = "text/plain", string $charset = "utf-8", int $httpCode = 200)
+    public function __construct(string $output, string $contentType = "text/plain", int $httpCode = 200, string $charset = "utf-8")
     {
         $this->output = $output;
         $this->contentType = $contentType;
-        $this->charset = $charset;
         $this->httpCode = $httpCode;
+        $this->charset = $charset;
     }
 
     /**

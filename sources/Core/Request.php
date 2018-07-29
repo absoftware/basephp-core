@@ -63,9 +63,15 @@ class Request
         return $port;
     }
     
-    public function requestUri()
+    public function uri()
     {
         return $_SERVER['REQUEST_URI'];
+    }
+
+    public function path()
+    {
+        $requestUri = explode("?", $this->uri());
+        return is_array($requestUri) && count($requestUri) > 0 ? $requestUri[0] : "/";
     }
     
     public function get($name)
