@@ -83,18 +83,13 @@ class Application
             // Search callback for current request.
             $callback = $router->callback($this->request->method(), $currentPath);
 
-            // Extract callback elements.
-            $className = $callback[0];
-            $methodName = $callback[1];
-            $params = $callback[2];
-
-            // Create controller.
-            $controller = new $className();
-            call_user_func_array([$controller, "setRequestObject"], [$this->request]);
-            call_user_func_array([$controller, "setSessionObject"], [$this->session]);
+            // Add dependencies to controller.
+            $controller = $callback->controller();
+            $controller->setRequestObject($this->request);
+            $controller->setSessionObject($this->session);
 
             // Execute method of controller.
-            $response = call_user_func_array([$controller, $methodName], $params);
+            $response = $callback->call();
             if (!$response instanceof Response)
             {
                 throw new InternalError("Response doesn't conform to Response interface.");

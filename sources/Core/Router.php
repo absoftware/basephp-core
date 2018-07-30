@@ -91,11 +91,11 @@ class Router
      * Searches callback for given method and path.
      * @param string $method
      * @param string $path
-     * @return array First element is name of controller, second is name of method, third is an array of parameters.
+     * @return Call
      * @throws InternalError
      * @throws NotFound
      */
-    public function callback(string $method, string $path)
+    public function callback(string $method, string $path): Call
     {
         $executeRouteId = false;
         $params = false;
@@ -129,6 +129,6 @@ class Router
         
         $className = $callbackArray[0];
         $methodName = $callbackArray[1];
-        return [$className, $methodName, $params];
+        return new Call(new $className, $methodName, $params);
     }
 }
