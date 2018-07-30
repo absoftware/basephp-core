@@ -8,6 +8,10 @@
  */
 namespace Base\Templates;
 
+/**
+ * Class PhpTemplate.
+ * @package Base\Templates
+ */
 class PhpTemplate implements Template
 {
     protected $variables = [];
