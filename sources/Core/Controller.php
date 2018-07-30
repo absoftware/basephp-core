@@ -12,6 +12,7 @@ use Base\Exceptions\BadRequest;
 use Base\Responses\Html;
 use Base\Responses\HttpCode;
 use Base\Responses\Json;
+use Base\Responses\PhpInfo;
 use Base\Responses\Raw;
 use Base\Responses\Redirect;
 use Base\Templates\Template;
@@ -326,5 +327,14 @@ abstract class Controller
     protected function httpCode(int $httpCode): HttpCode
     {
         return new HttpCode($httpCode);
+    }
+
+    /**
+     * Returns PHP info response.
+     * @return PhpInfo
+     */
+    protected function phpInfo(): PhpInfo
+    {
+        return new PhpInfo();
     }
 }
