@@ -14,26 +14,48 @@ namespace Base\Templates;
  */
 class PhpTemplate implements Template
 {
+    /**
+     * Collection of template variables.
+     * @var array
+     */
     protected $variables = [];
-    
-    public function assign($name, $value): void
+
+    /**
+     * Assigns template variable.
+     * @param string $name
+     * @param $value
+     */
+    public function assign(string $name, $value): void
     {
         $this->variables[$name] = $value;
     }
-    
-    public function fetch($templateFile): string
+
+    /**
+     * Renders template and returns result as string.
+     * @param string $templateFile
+     * @return string
+     */
+    public function fetch(string $templateFile): string
     {
         extract($this->variables);
         ob_start();
         include($templateFile);
         return ob_get_clean();
     }
-    
-    public function display($templateFile): void
+
+    /**
+     * Renders template and puts result into output buffer.
+     * @param string $templateFile
+     */
+    public function display(string $templateFile): void
     {
         echo $this->fetch($templateFile);
     }
-    
+
+    /**
+     * Returns extension of filename for template files.
+     * @return string
+     */
     public function fileExtension(): string
     {
         return ".tpl.php";

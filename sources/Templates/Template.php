@@ -8,13 +8,36 @@
  */
 namespace Base\Templates;
 
+/**
+ * Interface for template engine.
+ * @package Base\Templates
+ */
 interface Template
 {
-    function assign($name, $value): void;
-    
-    function fetch($templateFile): string;
-    
-    function display($templateFile): void;
-    
+    /**
+     * Assigns template variable.
+     * @param string $name
+     * @param $value
+     */
+    function assign(string $name, $value): void;
+
+    /**
+     * Renders template and returns result as string.
+     * @param string $templateFile
+     * @return string
+     */
+    function fetch(string $templateFile): string;
+
+    /**
+     * Renders template and puts result into output buffer.
+     * @param string $templateFile
+     */
+    function display(string $templateFile): void;
+
+    /**
+     * Returns extension of filename for template files.
+     * For example ".tpl.php" for PHP templates or ".tpl" for Smarty.
+     * @return string
+     */
     function fileExtension(): string;
 }
