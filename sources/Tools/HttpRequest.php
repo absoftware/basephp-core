@@ -9,7 +9,7 @@
 namespace Base\Tools;
 
 /**
- * Class HttpRequest allows to create HTTP request.
+ * Class HttpRequest represents HTTP request.
  * @package Base\Tools
  */
 class HttpRequest
