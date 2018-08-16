@@ -49,7 +49,13 @@ class Resolver
         $this->defaultTypeValues[$typeName] = $value;
     }
 
-    public function create($className)
+    /**
+     * Creates instance of class with given name.
+     * @param string $className Full class name together with namespace like 'My\Namespace\ClassName'.
+     * @return object New object.
+     * @throws InternalError
+     */
+    public function create(string $className)
     {
         // Get reflection for given class name.
         $class = new \ReflectionClass($className);
