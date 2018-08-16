@@ -54,6 +54,7 @@ class Resolver
      * @param string $className Full class name together with namespace like 'My\Namespace\ClassName'.
      * @return object New object.
      * @throws InternalError
+     * @throws \ReflectionException
      */
     public function create(string $className)
     {

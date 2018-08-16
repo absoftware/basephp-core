@@ -229,6 +229,31 @@ class ResolverTestWithDependenciesAndScalars
 final class ResolverTest extends TestCase
 {
     /**
+     * Tests creating of nonexistence class.
+     */
+    public function testResolverTestNonexistenceClass()
+    {
+        try
+        {
+            $className = "Tests\\Core\\NonexistenceClass";
+            (new Resolver())->create($className);
+            $this->assertTrue(false, "Exception '\\ReflectionException' should be thrown.");
+        }
+        catch (\ReflectionException $reflectionException)
+        {
+            $this->assertTrue(true);
+        }
+        catch (\Exception $exception)
+        {
+            $this->assertTrue(false, $exception->getMessage());
+        }
+        catch (\Throwable $throwable)
+        {
+            $this->assertTrue(false, $throwable->getMessage());
+        }
+    }
+
+    /**
      * Tests creating of class ResolverTestNoConstructor.
      */
     public function testResolverTestNoConstructor()
