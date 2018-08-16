@@ -23,7 +23,7 @@ class PhpTemplate implements Template
     /**
      * Assigns template variable.
      * @param string $name
-     * @param $value
+     * @param mixed $value
      */
     public function assign(string $name, $value): void
     {

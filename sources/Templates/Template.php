@@ -17,7 +17,7 @@ interface Template
     /**
      * Assigns template variable.
      * @param string $name
-     * @param $value
+     * @param mixed $value
      */
     function assign(string $name, $value): void;
 
