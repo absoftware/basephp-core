@@ -9,6 +9,7 @@
 namespace Tests\Core;
 
 use Base\Core\Route;
+use Base\Tools\HttpRequest;
 use PHPUnit\Framework\TestCase;
 
 final class RouteTest extends TestCase
@@ -17,39 +18,39 @@ final class RouteTest extends TestCase
     {
         $tests = [
             [
-                "route" => "",
+                "pattern" => "",
                 "path" => "",
                 "expectedParamCount" => 0
             ],
             [
-                "route" => "ranking",
+                "pattern" => "ranking",
                 "path" => "",
                 "expectedParamCount" => false
             ],
             [
-                "route" => "",
+                "pattern" => "",
                 "path" => "ranking",
                 "expectedParamCount" => false
             ],
             [
-                "route" => "Ranking",
+                "pattern" => "Ranking",
                 "path" => "ranking",
                 "caseSensitive" => true,
                 "expectedParamCount" => false
             ],
             [
-                "route" => "Ranking",
+                "pattern" => "Ranking",
                 "path" => "ranking",
                 "caseSensitive" => false,
                 "expectedParamCount" => 0
             ],
             [
-                "route" => "ranking/{year}/{month}/{day}",
+                "pattern" => "ranking/{year}/{month}/{day}",
                 "path" => "ranking/2018/07/18",
                 "expectedParamCount" => 3
             ],
             [
-                "route" => "ranking/{year}/{month}/{day}",
+                "pattern" => "ranking/{year}/{month}/{day}",
                 "path" => "blog/2018/07",
                 "expectedParamCount" => false
             ]
@@ -58,15 +59,15 @@ final class RouteTest extends TestCase
         for ($index = 0; $index < count($tests); ++$index)
         {
             // Take test info.
-            $route = $tests[$index]["route"];
+            $pattern = $tests[$index]["pattern"];
             $path = $tests[$index]["path"];
             $caseSensitive = isset($tests[$index]["caseSensitive"]) ? $tests[$index]["caseSensitive"] : false;
             $expectedParamCount = $tests[$index]["expectedParamCount"];
             
             // Execute test.
-            $routeObject = new Route($route);
-            $result = $routeObject->match($path, $caseSensitive);
-            $paramCount = is_array($result) ? count($result) : false;
+            $routeObject = new Route(HttpRequest::GET, $pattern, "ExampleClass::method");
+            $params = $routeObject->match(HttpRequest::GET, $path, $caseSensitive);
+            $paramCount = is_array($params) ? count($params) : false;
             
             // Check result.
             $this->assertTrue($expectedParamCount === $paramCount, "Test at index $index failed.");

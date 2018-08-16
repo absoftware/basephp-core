@@ -11,6 +11,7 @@ namespace Base\Core;
 use Base\Exceptions\Exception;
 use Base\Exceptions\InternalError;
 use Base\Responses\Response;
+use Base\Tools\Resolver;
 
 /**
  * Class Application is main class of BasePHP Framework.
@@ -81,14 +82,22 @@ class Application
             $currentPath = $this->delegate->currentRequestPath($this->request);
             
             // Search callback for current request.
-            $callback = $router->callback($this->request->method(), $currentPath);
+            $callbackInfo = $router->callbackInfo($this->request->method(), $currentPath);
 
-            // Add dependencies to controller.
-            $controller = $callback->controller();
-            $controller->setRequestObject($this->request);
-            $controller->setSessionObject($this->session);
+            // Create controller.
+            $resolver = new Resolver();
+            $resolver->setDefaultTypeValue("Base\\Core\\Request", $this->request);
+            $resolver->setDefaultTypeValue("Base\\Core\\Session", $this->session);
+            $controller = $resolver->create($callbackInfo->className());
+
+            // Validate controller.
+            if (!$controller instanceof Controller)
+            {
+                throw new InternalError("Resolved class name '{$callbackInfo->className()}' is not Controller based class.");
+            }
 
             // Execute method of controller.
+            $callback = new Call($controller, $callbackInfo->classMethod(), $callbackInfo->params());
             $response = $callback->call();
             if (!$response instanceof Response)
             {

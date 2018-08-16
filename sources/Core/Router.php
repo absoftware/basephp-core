@@ -19,116 +19,111 @@ use Base\Tools\HttpRequest;
 class Router
 {
     /**
-     * Collection of registered routes. Routes are kept here in string format.
+     * Collection of registered routes.
      * @var array
      */
     protected $routes = [];
 
     /**
      * Adds route for DELETE requests.
-     * @param string $route
-     * @param string $callback
+     * @param string $pattern Path pattern.
+     * @param string $callback Name of controller and its methods.
      */
-    public function delete(string $route, string $callback)
+    public function delete(string $pattern, string $callback)
     {
-        $this->add(HttpRequest::DELETE, $route, $callback);
+        $this->add(HttpRequest::DELETE, $pattern, $callback);
     }
 
     /**
      * Adds route for GET requests.
-     * @param string $route
-     * @param string $callback
+     * @param string $pattern Path pattern.
+     * @param string $callback Name of controller and its methods.
      */
-    public function get(string $route, string $callback)
+    public function get(string $pattern, string $callback)
     {
-        $this->add(HttpRequest::GET, $route, $callback);
+        $this->add(HttpRequest::GET, $pattern, $callback);
     }
 
     /**
      * Adds route for POST requests.
-     * @param string $route
-     * @param string $callback
+     * @param string $pattern Path pattern.
+     * @param string $callback Name of controller and its methods.
      */
-    public function post(string $route, string $callback)
+    public function post(string $pattern, string $callback)
     {
-        $this->add(HttpRequest::POST, $route, $callback);
+        $this->add(HttpRequest::POST, $pattern, $callback);
     }
 
     /**
      * Adds route for PUT requests.
-     * @param string $route
-     * @param string $callback
+     * @param string $pattern Path pattern.
+     * @param string $callback Name of controller and its methods.
      */
-    public function put(string $route, string $callback)
+    public function put(string $pattern, string $callback)
     {
-        $this->add(HttpRequest::PUT, $route, $callback);
+        $this->add(HttpRequest::PUT, $pattern, $callback);
     }
 
     /**
      * Adds route for any requests.
-     * @param string $method
-     * @param string $route
-     * @param string $callback
+     * @param string $method HTTP request method.
+     * @param string $pattern Path pattern.
+     * @param string $callback Name of controller and its methods.
      * @throws InternalError
      */
-    public function add(string $method, string $route, string $callback)
+    public function add(string $method, string $pattern, string $callback)
     {
-        $routeId = $method . ":" . $route;
+        $route = new Route($method, $pattern, $callback);
+        $routeId = $route->routeId();
         
         if (isset($this->routes[$routeId]))
         {
             throw new InternalError("Route '{$routeId}' is already added.");
         }
         
-        $this->routes[$routeId] = [
-            "method" => $method,
-            "route" => $route,
-            "callback" => $callback
-        ];
+        $this->routes[$routeId] = $route;
     }
 
     /**
-     * Searches callback for given method and path.
-     * @param string $method
-     * @param string $path
-     * @return Call
+     * Searches route for given method and real path.
+     * @param string $method HTTP request method.
+     * @param string $path Real request path.
+     * @return CallbackInfo Information about callback.
      * @throws InternalError
      * @throws NotFound
      */
-    public function callback(string $method, string $path): Call
+    public function callbackInfo(string $method, string $path): CallbackInfo
     {
         $executeRouteId = false;
         $params = false;
-        foreach ($this->routes as $routeId => $routeInfo)
+
+        // Find matching route.
+        foreach ($this->routes as $routeId => $route)
         {
-            if ($routeInfo["method"] !== $method)
-            {
-                continue;
-            }
-            
-            $routeObject = new Route($routeInfo["route"]);
-            $params = $routeObject->match($path);
+            $params = $route->match($method, $path);
             if (is_array($params))
             {
                 $executeRouteId = $routeId;
                 break;
             }
         }
-        
+
+        // Return 404 if not found.
         if (!$executeRouteId)
         {
             throw new NotFound("Path '{$path}' not found.");
         }
-        
-        $callbackString = $this->routes[$executeRouteId]["callback"];
-        $callbackArray = explode("::", $callbackString);
-        if (count($callbackArray) != 2 || !$callbackArray[0] || !$callbackArray[1])
+
+        // Create callback info.
+        $route = $this->routes[$executeRouteId];
+        $callbackInfo = new CallbackInfo($route->callback(), $params);
+
+        // Validate callback of found route.
+        if (!$callbackInfo->isValid())
         {
-            throw new InternalError("Syntax error of callback '{$callbackString}'.");
+            throw new InternalError("Syntax error of callback '{$callbackInfo->callback()}'.");
         }
-        
-        $className = $callbackArray[0];
-        $methodName = $callbackArray[1];
-        return new Call(new $className, $methodName, $params);
+
+        return $callbackInfo;
     }
 }
