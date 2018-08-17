@@ -43,6 +43,17 @@ abstract class Controller
     private $session = null;
 
     /**
+     * Controller constructor.
+     * @param Request $request
+     * @param Session $session
+     */
+    public function __construct(Request $request, Session $session)
+    {
+        $this->request = $request;
+        $this->session = $session;
+    }
+
+    /**
      * Sets request object.
      * @param Request $request
      */

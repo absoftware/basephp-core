@@ -223,6 +223,14 @@ class ResolverTestWithDependenciesAndScalars
 }
 
 /**
+ * Class ResolverTestNoConstructorWithBaseClass.
+ * @package Tests\Core
+ */
+class ResolverTestNoConstructorWithBaseClass extends ResolverTestWithDependenciesAndScalars
+{
+}
+
+/**
  * Class ResolverTest tests Resolver class.
  * @package Tests\Core
  */
@@ -384,5 +392,15 @@ final class ResolverTest extends TestCase
         $resolver->setDefaultClassParameterValue($className, "param3", 400);
         $object = $resolver->create($className);
         $this->assertTrue(get_class($object) === $className && $object == $className . "(Tests\\Core\\ResolverTestWithClassParam(Tests\\Core\\ResolverTestNoConstructor), Tests\\Core\\ResolverTestWithClassParams(Tests\\Core\\ResolverTestNoConstructor, Tests\\Core\\ResolverTestNoParams), 400)");
+    }
+
+    /**
+     * Tests creating of class ResolverTestNoConstructorWithBaseClass.
+     */
+    public function testResolverTestNoConstructorWithBaseClass()
+    {
+        $className = "Tests\\Core\\ResolverTestNoConstructorWithBaseClass";
+        $object = (new Resolver())->create($className);
+        $this->assertTrue(get_class($object) === $className && $object == $className . "(Tests\\Core\\ResolverTestWithClassParam(Tests\\Core\\ResolverTestNoConstructor), Tests\\Core\\ResolverTestWithClassParams(Tests\\Core\\ResolverTestNoConstructor, Tests\\Core\\ResolverTestNoParams), 200)");
     }
 }
