@@ -47,6 +47,12 @@ class Application
     protected $session;
 
     /**
+     * Resolved controller.
+     * @var Controller|null
+     */
+    protected $controller = null;
+
+    /**
      * Application constructor.
      * @param ApplicationDelegate $delegate
      * @param Config $config
@@ -88,14 +94,14 @@ class Application
             $resolver = new Resolver();
             $resolver->setDefaultTypeValue("Base\\Core\\Request", $this->request);
             $resolver->setDefaultTypeValue("Base\\Core\\Session", $this->session);
-            $controller = $resolver->create($callbackInfo->className());
-            if (!$controller instanceof Controller)
+            $this->controller = $resolver->create($callbackInfo->className());
+            if (!$this->controller instanceof Controller)
             {
                 throw new InternalError("Resolved class name '{$callbackInfo->className()}' is not Controller based class.");
             }
 
             // Execute method of controller.
-            $callback = new Call($controller, $callbackInfo->classMethod(), $callbackInfo->params());
+            $callback = new Call($this->controller, $callbackInfo->classMethod(), $callbackInfo->params());
             $response = $callback->call();
             if (!$response instanceof Response)
             {
@@ -105,14 +111,20 @@ class Application
             // Put response to output buffer.
             $response->display();
         }
-        catch (Exception $e)
+        catch (Exception $exception)
         {
-            $response = $this->delegate->responseForException($this->request, $e);
+            $response = $this->controller ? $this->controller->responseForException($exception) : null;
+            if (!$response) {
+                $response = $this->delegate->responseForException($this->request, $exception);
+            }
             $response->display();
         }
-        catch (\Throwable $t)
+        catch (\Throwable $throwable)
         {
-            $response = $this->delegate->responseForThrowable($this->request, $t);
+            $response = $this->controller ? $this->controller->responseForThrowable($throwable) : null;
+            if (!$response) {
+                $response = $this->delegate->responseForThrowable($this->request, $throwable);
+            }
             $response->display();
         }
         finally

@@ -9,6 +9,7 @@
 namespace Base\Core;
 
 use Base\Exceptions\BadRequest;
+use Base\Exceptions\Exception;
 use Base\Responses\Html;
 use Base\Responses\HttpCode;
 use Base\Responses\Json;
@@ -347,5 +348,25 @@ abstract class Controller
     protected function phpInfo(): PhpInfo
     {
         return new PhpInfo();
+    }
+
+    /**
+     * Derived implementation of controller may deliver response in case of BasePHP exception.
+     * @param Exception $exception
+     * @return Response|null
+     */
+    public function responseForException(Exception $exception): ?Response
+    {
+        return null;
+    }
+
+    /**
+     * Derived implementation of controller may deliver response in case of unknown exception.
+     * @param \Throwable $throwable
+     * @return Response|null
+     */
+    public function responseForThrowable(\Throwable $throwable): ?Response
+    {
+        return null;
     }
 }
