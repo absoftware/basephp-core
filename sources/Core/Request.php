@@ -33,7 +33,7 @@ class Request
      * Request method.
      * @return string
      */
-    public function method()
+    public function method(): string
     {
         return strtoupper($_SERVER['REQUEST_METHOD']);
     }
@@ -42,7 +42,7 @@ class Request
      * Returns true if connection is performed through HTTPS protocol.
      * @return bool
      */
-    public function isHttps()
+    public function isHttps(): bool
     {
         if (!empty($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] == 'https')
         {
@@ -66,7 +66,7 @@ class Request
      * Returns true if request is an AJAX request.
      * @return bool
      */
-    function isAjax()
+    function isAjax(): bool
     {
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
     }
@@ -75,7 +75,7 @@ class Request
      * Protocol.
      * @return string
      */
-    public function protocol()
+    public function protocol(): string
     {
         return $this->isHttps() ? "https://" : "http://";
     }
@@ -84,7 +84,7 @@ class Request
      * Full host name.
      * @return string
      */
-    public function host()
+    public function host(): string
     {
         return strtolower($_SERVER['SERVER_NAME']);
     }
@@ -93,7 +93,7 @@ class Request
      * Current port.
      * @return int
      */
-    public function port()
+    public function port(): int
     {
         if (isset($_SERVER['SERVER_PORT']))
         {
@@ -110,16 +110,16 @@ class Request
      * Request URI which means path and arguments starting from slash character.
      * @return mixed
      */
-    public function uri()
+    public function uri(): string
     {
         return $_SERVER['REQUEST_URI'];
     }
 
     /**
      * Path of request without arguments starting from slash character.
-     * @return mixed|string
+     * @return string
      */
-    public function path()
+    public function path(): string
     {
         $requestUri = explode("?", $this->uri());
         return is_array($requestUri) && count($requestUri) > 0 ? $requestUri[0] : "/";

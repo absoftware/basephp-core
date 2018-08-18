@@ -103,7 +103,7 @@ abstract class Controller
      * Protocol.
      * @return string
      */
-    public function protocol()
+    public function protocol(): string
     {
         return $this->request->protocol();
     }
@@ -112,7 +112,7 @@ abstract class Controller
      * Full host name.
      * @return string
      */
-    public function host()
+    public function host(): string
     {
         return $this->request->host();
     }
@@ -121,25 +121,25 @@ abstract class Controller
      * Current port.
      * @return int
      */
-    public function port()
+    public function port(): int
     {
         return $this->request->port();
     }
 
     /**
      * Request URI which means path and arguments starting from slash character.
-     * @return mixed
+     * @return string
      */
-    public function uri()
+    public function uri(): string
     {
         return $this->request->uri();
     }
 
     /**
      * Path of request without arguments starting from slash character.
-     * @return mixed|string
+     * @return string
      */
-    public function path()
+    public function path(): string
     {
         return $this->request->path();
     }
