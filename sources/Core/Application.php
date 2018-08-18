@@ -89,8 +89,6 @@ class Application
             $resolver->setDefaultTypeValue("Base\\Core\\Request", $this->request);
             $resolver->setDefaultTypeValue("Base\\Core\\Session", $this->session);
             $controller = $resolver->create($callbackInfo->className());
-
-            // Validate controller.
             if (!$controller instanceof Controller)
             {
                 throw new InternalError("Resolved class name '{$callbackInfo->className()}' is not Controller based class.");
