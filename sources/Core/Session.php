@@ -41,7 +41,7 @@ class Session
      *      between all subdomains. Domain without dot at the beginning like "example.com",
      *      "subdomain.example.com" or null will limit session only to one specific domain.
      */
-    public function __construct(int $sessionTime, string $domain = null)
+    public function __construct(int $sessionTime = 2400, string $domain = null)
     {
         ini_set('session.gc_maxlifetime', $sessionTime);
         session_set_cookie_params(0, '/', $domain);
