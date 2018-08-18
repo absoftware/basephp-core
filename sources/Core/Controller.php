@@ -17,6 +17,7 @@ use Base\Responses\PhpInfo;
 use Base\Responses\Raw;
 use Base\Responses\Redirect;
 use Base\Templates\Template;
+use Base\Tools\Resolver;
 
 /**
  * Class Controller is base class for all other controllers.
@@ -25,6 +26,21 @@ use Base\Templates\Template;
  */
 abstract class Controller
 {
+    /**
+     * Identifier of request in common resources.
+     */
+    const COMMON_REQUEST = "controller_common_request";
+
+    /**
+     * Identifier of session in common resources.
+     */
+    const COMMON_SESSION = "controller_common_session";
+
+    /**
+     * Identifier of DI resolver in common resources.
+     */
+    const COMMON_RESOLVER = "controller_common_resolver";
+
     /**
      * Current request.
      * @var Request
@@ -44,14 +60,22 @@ abstract class Controller
     private $session = null;
 
     /**
-     * Controller constructor.
-     * @param Request $request
-     * @param Session $session
+     * Dependency injection resolver.
+     * @var Resolver
      */
-    public function __construct(Request $request, Session $session)
+    private $resolver = null;
+
+    /**
+     * Controller constructor.
+     * @param Request|null $request
+     * @param Session|null $session
+     * @param Resolver|null $resolver
+     */
+    public function __construct(Request $request = null, Session $session = null, Resolver $resolver = null)
     {
-        $this->request = $request;
-        $this->session = $session;
+        $this->request = $request ?? Common::singleton()->get(self::COMMON_REQUEST);
+        $this->session = $session ?? Common::singleton()->get(self::COMMON_SESSION);
+        $this->resolver = $resolver ?? Common::singleton()->get(self::COMMON_RESOLVER);
     }
 
     /**
@@ -79,6 +103,24 @@ abstract class Controller
     public function setTemplateObject(Template $template)
     {
         $this->template = $template;
+    }
+
+    /**
+     * Sets resolver object.
+     * @param Resolver $resolver
+     */
+    public function setResolverObject(Resolver $resolver)
+    {
+        $this->resolver = $resolver;
+    }
+
+    /**
+     * Returns dependency injection resolver.
+     * @return Resolver|null
+     */
+    public function resolver(): ?Resolver
+    {
+        return $this->resolver;
     }
 
     /**

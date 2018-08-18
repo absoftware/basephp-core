@@ -90,10 +90,18 @@ class Application
             // Search callback for current request.
             $callbackInfo = $router->callbackInfo($this->request->method(), $currentPath);
 
-            // Create controller.
+            // Create resolver.
             $resolver = new Resolver();
             $resolver->setDefaultTypeValue("Base\\Core\\Request", $this->request);
             $resolver->setDefaultTypeValue("Base\\Core\\Session", $this->session);
+            $resolver->setDefaultTypeValue("Base\\Tools\\Resolver", $resolver);
+
+            // Set common resources for controllers. It helps to create new controllers and views easily.
+            Common::singleton()->set(Controller::COMMON_REQUEST, $this->request);
+            Common::singleton()->set(Controller::COMMON_SESSION, $this->session);
+            Common::singleton()->set(Controller::COMMON_RESOLVER, $resolver);
+
+            // Create controller.
             $this->controller = $resolver->create($callbackInfo->className());
             if (!$this->controller instanceof Controller)
             {
