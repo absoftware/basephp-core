@@ -14,6 +14,13 @@ use Base\Tools\HttpRequest;
 
 /**
  * Class Router.
+ *
+ * TODO: Implement middleware to rate limit access to routes within application.
+ * TODO: Implement path-prefix patterns for example for language in path like http://domain.com/en/my/path.
+ * TODO: Implement groups of routes that path prefixes or middleware limits could be assigned to each group.
+ * TODO: Implement authorization methods on Router level.
+ * TODO: Implement fallbacks (?) instead of immediately 404.
+ *
  * @package Base\Core
  */
 class Router
