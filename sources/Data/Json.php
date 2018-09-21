@@ -44,13 +44,13 @@ class Json extends Data
 
     /**
      * Creates Json from string in JSON format.
-     * @param string $json
+     * @param string $jsonString
      * @return Json
      */
-    static public function fromString(string $json): Json
+    static public function fromString(string $jsonString): Json
     {
         $json = new self;
-        $json->data = json_decode($json, true);
+        $json->data = json_decode($jsonString, true);
         return $json;
     }
 
