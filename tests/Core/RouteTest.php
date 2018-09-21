@@ -9,7 +9,7 @@
 namespace Tests\Core;
 
 use Base\Core\Route;
-use Base\Tools\HttpRequest;
+use Base\Http\HttpRequest;
 use PHPUnit\Framework\TestCase;
 
 final class RouteTest extends TestCase

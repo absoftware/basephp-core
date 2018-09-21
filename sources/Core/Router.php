@@ -10,7 +10,7 @@ namespace Base\Core;
 
 use Base\Exceptions\InternalError;
 use Base\Exceptions\NotFound;
-use Base\Tools\HttpRequest;
+use Base\Http\HttpRequest;
 
 /**
  * Class Router.
