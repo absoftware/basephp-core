@@ -8,7 +8,7 @@
  */
 namespace Base\Http;
 
-use Base\Data;
+use Base\Data\Data;
 
 /**
  * Class HttpResponse represents HTTP response.
@@ -17,33 +17,33 @@ use Base\Data;
 class HttpResponse
 {
     /**
-     * HTPP code.
+     * HTTP code.
      * @var int
      */
-    private $httpCode = 0;
+    protected $httpCode = 0;
 
     /**
-     * HTTP headers.
-     * @var array
+     * HTTP header.
+     * @var HttpHeader
      */
-    private $headers;
+    protected $header;
 
     /**
      * Content of response.
      * @var Data
      */
-    private $content;
+    protected $content;
 
     /**
      * HttpResponse constructor.
      * @param int $httpCode
-     * @param array $headers
-     * @param Data $body
+     * @param HttpHeader $header
+     * @param Data $content
      */
-    public function __construct(int $httpCode, array $headers, Data $content)
+    public function __construct(int $httpCode, HttpHeader $header, Data $content)
     {
         $this->httpCode = $httpCode;
-        $this->headers = $headers;
+        $this->header = $header;
         $this->content = $content;
     }
 
@@ -57,12 +57,12 @@ class HttpResponse
     }
 
     /**
-     * Returns HTTP headers.
-     * @return array
+     * Returns HTTP header.
+     * @return HttpHeader
      */
-    public function headers(): array
+    public function headers(): HttpHeader
     {
-        return $this->headers;
+        return $this->header;
     }
 
     /**

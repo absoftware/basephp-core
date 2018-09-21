@@ -37,6 +37,7 @@ class Raw extends Data
     /**
      * Creates Raw from string.
      * @param string $data
+     * @param string $contentType
      * @return Raw
      */
     static public function fromString(string $data, string $contentType): Raw

@@ -8,7 +8,7 @@
  */
 namespace Base\Http;
 
-use Base\Data;
+use Base\Data\Data;
 
 /**
  * Class HttpRequest represents HTTP request.
@@ -26,36 +26,38 @@ class HttpRequest
      * Request method.
      * @var string
      */
-    private $method;
+    protected $method;
 
     /**
      * Initial request URL.
      * @var string
      */
-    private $url;
+    protected $url;
 
     /**
-     * HTTP headers.
-     * @var array
+     * HTTP header.
+     * @var HttpHeader
      */
-    private $headers;
+    protected $header;
 
     /**
      * Content of request.
      * @var Data
      */
-    private $content;
+    protected $content;
 
     /**
      * HttpRequest constructor.
      * @param string $url
      * @param string $method
-     * @param Data $content
+     * @param HttpHeader|null $header
+     * @param Data|null $content
      */
-    public function __construct(string $url, string $method = self::GET, Data $content = null)
+    public function __construct(string $url, string $method = self::GET, HttpHeader $header = null, Data $content = null)
     {
         $this->url = $url;
         $this->method = $method;
+        $this->header = $header;
         $this->content = $content;
     }
 
@@ -78,12 +80,12 @@ class HttpRequest
     }
 
     /**
-     * Returns HTTP headers.
-     * @return array
+     * Returns HTTP header.
+     * @return HttpHeader|null
      */
-    public function headers(): array
+    public function header(): ?HttpHeader
     {
-        return $this->headers;
+        return $this->header;
     }
 
     /**

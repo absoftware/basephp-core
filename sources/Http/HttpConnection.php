@@ -111,31 +111,28 @@ class HttpConnection
         // Create CURL connection.
         $curl = curl_init();
         curl_setopt($curl, CURLINFO_HEADER_OUT, true);
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $httpRequest->method());
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $this->httpRequest->method());
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_URL, $httpRequest->url());
+        curl_setopt($curl, CURLOPT_URL, $this->httpRequest->url());
 
         // Initialize headers.
-        $headers = $httpRequest->headers();
-        if (!is_array($headers))
-        {
-            $headers = [];
-        }
+        $header = $this->httpRequest->header();
+        $headers = $header && is_array($header->headers()) ? $header->headers() : [];
 
         // Set content.
-        $content = $httpRequest->content();
-        if ($content)
+        $requestData = $this->httpRequest->content();
+        if ($requestData)
         {
-            if (!isset($headers["Content-Type"]))
+            if (!$header || !$header->contains("Content-Type"))
             {
-                $headers["Content-Type"] = $content->contentType();
+                $headers["Content-Type"] = $requestData->contentType();
             }
-            if (!isset($headers["Content-Length"]))
+            if (!$header || !$header->contains("Content-Length"))
             {
-                $headers["Content-Length"] = (string)$content->contentLength();
+                $headers["Content-Length"] = (string)$requestData->contentLength();
             }
-            curl_setopt($curl, CURLOPT_POST, $content === "application/x-www-form-urlencoded" ? 1 : 0);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $content->content());
+            curl_setopt($curl, CURLOPT_POST, $requestData->contentType() === "application/x-www-form-urlencoded" ? 1 : 0);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $requestData->content());
         }
 
         // Set headers.
@@ -161,26 +158,27 @@ class HttpConnection
             curl_close($curl);
         }
 
-        // Return null in case of errror.
+        // Return null in case of error.
         if ($this->errorCode !== 0)
         {
             return null;
         }
 
         // Parse content.
-        $content = null;
-        switch (mb_strtolower($responseHeaderReader->contentType))
+        /** @var Data|null $responseData */
+        $responseData = null;
+        switch (mb_strtolower($this->responseContentType))
         {
             case Json::CONTENT_TYPE_JSON:
-                $content = Json::fromString($responseContent);
+                $responseData = Json::fromString($responseContent);
                 break;
             default:
-                $content = Raw::fromString($responseContent, $responseHeaderReader->contentType);
+                $responseData = Raw::fromString($responseContent, $this->responseContentType);
                 break;
         }
 
         // Create response object.
-        return new HttpResponse($httpCode, $responseHeaderReader->httpHeaders, $content);
+        return new HttpResponse($httpCode, new HttpHeader($this->responseHttpHeaders), $responseData);
     }
 
     /**
@@ -189,7 +187,7 @@ class HttpConnection
      * @param $headerLine
      * @return int
      */
-    protected function readHeaderLine($curl, $headerLine)
+    protected function readHeaderLine(/** @noinspection PhpUnusedParameterInspection */ $curl, $headerLine)
     {
         $line = trim($headerLine);
         if ($line)
