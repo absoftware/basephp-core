@@ -8,26 +8,23 @@
  */
 namespace Base\Tools;
 
-use Base\Data\Json;
+use Base\Exceptions\ArgumentException;
 
 /**
  * Class JwtDecoded represents decoded JSON Web Token.
- *
- * TODO: Implement custom headers for JwtDecoded and parse algorithm type. Throw exception if algorithm is not supported.
- *
  * @package Base\Tools
  */
 class JwtDecoded
 {
     /**
      * Header.
-     * @var Json
+     * @var array
      */
     protected $header;
 
     /**
      * Payload.
-     * @var Json
+     * @var array
      */
     protected $payload;
 
@@ -39,17 +36,29 @@ class JwtDecoded
 
     /**
      * JwtDecoded constructor.
-     * @param Json $payload
+     * @param array $header
+     * @param array $payload
      * @param string $secret
+     * @throws ArgumentException
      */
-    public function __construct(Json $payload, string $secret)
+    public function __construct(array $header, array $payload, string $secret)
     {
+        // Validate supported algorithm.
+        if (!isset($header['alg']) || $header['alg'] != "HS256")
+        {
+            throw new ArgumentException("header", "Wrong header field 'alg'. The only supported value is 'HS256'.");
+        }
+
+        // Validate supported token type.
+        if (!isset($header['typ']) || $header['typ'] != "JWT")
+        {
+            throw new ArgumentException("header", "Wrong header field 'typ'. The only supported value is 'JWT'.");
+        }
+
+        // Assign attributes.
+        $this->header = $header;
         $this->payload = $payload;
         $this->secret = $secret;
-        $this->header = Json::fromDictionary([
-            "alg" => "HS256",
-            "typ" => "JWT"
-        ]);
     }
 
     /**
@@ -58,7 +67,7 @@ class JwtDecoded
      */
     public function header(): array
     {
-        return $this->header->data();
+        return $this->header;
     }
 
     /**
@@ -67,7 +76,7 @@ class JwtDecoded
      */
     public function payload(): array
     {
-        return $this->payload->data();
+        return $this->payload;
     }
 
     /**
@@ -84,8 +93,8 @@ class JwtDecoded
      */
     public function __toString()
     {
-        $header64 = Base64Url::encode($this->header->content());
-        $payload64 = Base64Url::encode($this->payload->content());
+        $header64 = Base64Url::encode(json_encode($this->header, JSON_PRETTY_PRINT));
+        $payload64 = Base64Url::encode(json_encode($this->payload, JSON_PRETTY_PRINT));
         $data = $header64 . "." . $payload64;
         return $data . "." . Base64Url::encode(hash_hmac('sha256', $data, $this->secret, true));
     }

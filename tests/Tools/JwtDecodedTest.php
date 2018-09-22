@@ -8,7 +8,6 @@
  */
 namespace Tests\Core;
 
-use Base\Data\Json;
 use Base\Tools\JwtDecoded;
 use Base\Tools\JwtEncoded;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +23,15 @@ final class JwtDecodedTest extends TestCase
      * @var string
      */
     protected $validToken = "ewogICAgImFsZyI6ICJIUzI1NiIsCiAgICAidHlwIjogIkpXVCIKfQ.ewogICAgIm5hbWUiOiAiSm9obiBEb2UiLAogICAgImFkbWluIjogdHJ1ZQp9.aDzg64cCiVYmbRq8Rkl8Ztxgta2vopyhiUbDiUFOZiw";
+
+    /**
+     * Test header for JWT.
+     * @var array
+     */
+    protected $header = [
+        'alg' => 'HS256',
+        'typ' => 'JWT'
+    ];
 
     /**
      * Test payload for JWT.
@@ -45,7 +53,7 @@ final class JwtDecodedTest extends TestCase
      */
     public function testJwtDecoded_create()
     {
-        $jwtDecoded = new JwtDecoded(Json::fromDictionary($this->payload), $this->secret);
+        $jwtDecoded = new JwtDecoded($this->header, $this->payload, $this->secret);
         $this->assertTrue((string)$jwtDecoded == $this->validToken);
     }
 
@@ -54,7 +62,7 @@ final class JwtDecodedTest extends TestCase
      */
     public function testJwtDecoded_encode()
     {
-        $jwtDecoded = new JwtDecoded(Json::fromDictionary($this->payload), $this->secret);
+        $jwtDecoded = new JwtDecoded($this->header, $this->payload, $this->secret);
         /** @var JwtEncoded $jwtEncoded */
         $jwtEncoded = $jwtDecoded->encode();
         $this->assertTrue($jwtEncoded->isValid() && (string)$jwtEncoded == (string)$jwtDecoded);

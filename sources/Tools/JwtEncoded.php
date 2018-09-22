@@ -65,6 +65,7 @@ class JwtEncoded
     /**
      * Returns true if provided JWT is valid and signed properly.
      * @return bool
+     * @throws \Base\Exceptions\ArgumentException
      */
     public function isValid(): bool
     {
@@ -74,6 +75,7 @@ class JwtEncoded
     /**
      * Returns only valid token.
      * @return JwtDecoded|null
+     * @throws \Base\Exceptions\ArgumentException
      */
     public function decode(): ?JwtDecoded
     {
@@ -91,8 +93,9 @@ class JwtEncoded
             return null;
         }
 
-        $decodedPayload = Base64Url::decode($this->payload);
-        return new JwtDecoded(Json::fromString($decodedPayload), $this->secret);
+        $decodedHeader = json_decode(Base64Url::decode($this->header), true);
+        $decodedPayload = json_decode(Base64Url::decode($this->payload), true);
+        return new JwtDecoded($decodedHeader, $decodedPayload, $this->secret);
     }
 
     /**
