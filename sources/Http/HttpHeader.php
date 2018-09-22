@@ -9,7 +9,7 @@
 namespace Base\Http;
 
 /**
- * Class HttpHeader represents HTTP header lines.
+ * Class HttpHeader represents HTTP header.
  * @package Base\Http
  */
 class HttpHeader
@@ -39,7 +39,8 @@ class HttpHeader
     }
 
     /**
-     * Returns value of header for given key line if available.
+     * Returns value of header for given key if available.
+     * Comparing of keys is case-insensitive.
      * @param string $key
      * @return null|string
      */
@@ -57,6 +58,7 @@ class HttpHeader
 
     /**
      * Returns true if header contains line with given key.
+     * Comparing of keys is case-insensitive.
      * @param $key
      * @return bool
      */
