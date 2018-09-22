@@ -12,6 +12,9 @@ use Base\Data\Json;
 
 /**
  * Class JwtDecoded represents decoded JSON Web Token.
+ *
+ * TODO: Implement custom headers for JwtDecoded and parse algorithm type. Throw exception if algorithm is not supported.
+ *
  * @package Base\Tools
  */
 class JwtDecoded
