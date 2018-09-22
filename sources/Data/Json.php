@@ -31,6 +31,15 @@ class Json extends Data
     }
 
     /**
+     * Returns data.
+     * @return array
+     */
+    public function data(): array
+    {
+        return $this->data;
+    }
+
+    /**
      * Creates Json from associative array.
      * @param array $data
      * @return Json
