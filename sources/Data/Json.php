@@ -8,6 +8,9 @@
  */
 namespace Base\Data;
 
+use Base\Exceptions\InternalError;
+use Base\Http\HttpHeader;
+
 /**
  * Class Json represents data in JSON format.
  * @package Base\Data
@@ -24,10 +27,13 @@ class Json extends Data
 
     /**
      * Json constructor.
+     * @param array $data
+     * @param string $charset
      */
-    protected function __construct()
+    public function __construct(array $data, string $charset = "utf-8")
     {
-        $this->data = [];
+        $this->data = $data;
+        parent::__construct(new HttpHeader(["Access-Control-Allow-Origin" => "*"]), $charset);
     }
 
     /**
@@ -40,26 +46,33 @@ class Json extends Data
     }
 
     /**
-     * Creates Json from associative array.
+     * Returns encoded JSON string.
      * @param array $data
-     * @return Json
+     * @param string $charset
+     * @return string
+     * @throws InternalError
      */
-    static public function fromDictionary(array $data): Json
+    static public function encode(array $data, string $charset = "utf-8"): string
     {
-        $json = new self;
-        $json->data = $data;
-        return $json;
+        $json = new Json($data, $charset);
+        return $json->content();
     }
 
     /**
      * Creates Json from string in JSON format.
      * @param string $jsonString
      * @return Json
+     * @throws InternalError
      */
-    static public function fromString(string $jsonString): Json
+    static public function decode(string $jsonString): Json
     {
-        $json = new self;
-        $json->data = json_decode($jsonString, true);
+        $json = new self([]);
+        $data = json_decode($jsonString, true);
+        if (!is_array($data))
+        {
+            throw new InternalError("JSON decoding failed.");
+        }
+        $json->data = $data;
         return $json;
     }
 
@@ -73,11 +86,17 @@ class Json extends Data
     }
 
     /**
-     * Returns raw data.
-     * @return mixed
+     * Returns encoded JSON string.
+     * @return string
+     * @throws InternalError
      */
     function content(): string
     {
-        return json_encode($this->data, JSON_PRETTY_PRINT);
+        $jsonString = json_encode($this->data, JSON_PRETTY_PRINT);
+        if ($jsonString === false)
+        {
+            throw new InternalError("JSON encoding failed.");
+        }
+        return $jsonString;
     }
 }

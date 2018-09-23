@@ -18,34 +18,25 @@ class Raw extends Data
      * Input data.
      * @var string
      */
-    private $data;
+    protected $data;
 
     /**
      * Content type for HTTP header.
      * @var string
      */
-    private $contentType;
+    protected $contentType;
 
     /**
      * Raw constructor.
-     */
-    protected function __construct()
-    {
-        $this->data = "";
-    }
-
-    /**
-     * Creates Raw from string.
      * @param string $data
      * @param string $contentType
-     * @return Raw
+     * @param string $charset
      */
-    static public function fromString(string $data, string $contentType): Raw
+    public function __construct(string $data, string $contentType = "text/plain", string $charset = "utf-8")
     {
-        $raw = new self;
-        $raw->data = $data;
-        $raw->contentType = $contentType;
-        return $raw;
+        $this->data = $data;
+        $this->contentType = $contentType;
+        parent::__construct(null, $charset);
     }
 
     /**

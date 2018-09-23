@@ -10,6 +10,9 @@ namespace Base\Http;
 
 /**
  * Class HttpHeader represents HTTP header.
+ *
+ * TODO: Do something with case-sensitive cases when looking headers especially when gets response.
+ *
  * @package Base\Http
  */
 class HttpHeader
@@ -65,5 +68,16 @@ class HttpHeader
     public function contains($key): bool
     {
         return $this->value($key) != null;
+    }
+
+    /**
+     * Returns merged HTTP header.
+     * @param HttpHeader $httpHeader
+     * @return HttpHeader
+     */
+    public function replace(HttpHeader $httpHeader): HttpHeader
+    {
+        $headers = array_replace_recursive($this->headers(), $httpHeader->headers());
+        return new HttpHeader($headers);
     }
 }

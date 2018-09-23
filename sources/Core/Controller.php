@@ -10,12 +10,10 @@ namespace Base\Core;
 
 use Base\Exceptions\BadRequest;
 use Base\Exceptions\Exception;
-use Base\Responses\Html;
-use Base\Responses\HttpCode;
-use Base\Responses\Json;
-use Base\Responses\PhpInfo;
-use Base\Responses\Raw;
-use Base\Responses\Redirect;
+use Base\Data\Html;
+use Base\Data\Json;
+use Base\Data\Raw;
+use Base\Http\HttpHeader;
 use Base\Templates\Template;
 use Base\Tools\Resolver;
 
@@ -333,11 +331,11 @@ abstract class Controller
      * @param string $contentType
      * @param int $httpCode
      * @param string $charset
-     * @return Raw
+     * @return Response
      */
-    protected function raw(string $output, string $contentType = "text/plain", int $httpCode = 200, string $charset = "utf-8"): Raw
+    protected function raw(string $output, string $contentType = "text/plain", int $httpCode = 200, string $charset = "utf-8"): Response
     {
-        return new Raw($output, $contentType, $httpCode, $charset);
+        return new Response(new Raw($output, $contentType, $charset), $httpCode);
     }
 
     /**
@@ -345,11 +343,11 @@ abstract class Controller
      * @param string $html
      * @param int $httpCode
      * @param string $charset
-     * @return Html
+     * @return Response
      */
-    protected function html(string $html, int $httpCode = 200, string $charset = "utf-8"): Html
+    protected function html(string $html, int $httpCode = 200, string $charset = "utf-8"): Response
     {
-        return new Html($html, $httpCode, $charset);
+        return new Response(new Html($html, $charset), $httpCode);
     }
 
     /**
@@ -357,40 +355,32 @@ abstract class Controller
      * @param array $data
      * @param int $httpCode
      * @param string $charset
-     * @return Json
+     * @return Response
      */
-    protected function json(array $data, int $httpCode = 200, string $charset = "utf-8"): Json
+    protected function json(array $data, int $httpCode = 200, string $charset = "utf-8"): Response
     {
-        return new Json($data, $httpCode, $charset);
+        return new Response(new Json($data, $charset), $httpCode);
     }
 
     /**
-     * Returns redirect response.
+     * Returns redirect as response.
      * @param string $url
-     * @return Redirect
+     * @return Response
      */
-    protected function redirect(string $url): Redirect
+    protected function redirect(string $url): Response
     {
-        return new Redirect($url);
+        // HTTP code will be set automatically for header Location.
+        return new Response(null, 0, new HttpHeader(["Location" => $url]));
     }
 
     /**
      * Returns HTTP code without body.
      * @param int $httpCode
-     * @return HttpCode
+     * @return Response
      */
-    protected function httpCode(int $httpCode): HttpCode
+    protected function httpCode(int $httpCode): Response
     {
-        return new HttpCode($httpCode);
-    }
-
-    /**
-     * Returns PHP info response.
-     * @return PhpInfo
-     */
-    protected function phpInfo(): PhpInfo
-    {
-        return new PhpInfo();
+        return new Response(null, $httpCode, null);
     }
 
     /**
@@ -398,7 +388,7 @@ abstract class Controller
      * @param Exception $exception
      * @return Response|null
      */
-    public function responseForException(Exception $exception): ?Response
+    public function responseForException(/** @noinspection PhpUnusedParameterInspection */ Exception $exception): ?Response
     {
         return null;
     }
@@ -408,7 +398,7 @@ abstract class Controller
      * @param \Throwable $throwable
      * @return Response|null
      */
-    public function responseForThrowable(\Throwable $throwable): ?Response
+    public function responseForThrowable(/** @noinspection PhpUnusedParameterInspection */ \Throwable $throwable): ?Response
     {
         return null;
     }

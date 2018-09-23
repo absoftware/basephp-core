@@ -1,7 +1,7 @@
 <?php
 /**
  * @project BasePHP Core
- * @file Form.php created by Ariel Bogdziewicz on 21/09/2018
+ * @file Post.php created by Ariel Bogdziewicz on 21/09/2018
  * @author Ariel Bogdziewicz
  * @copyright Copyright © 2018 Ariel Bogdziewicz. All rights reserved.
  * @license MIT
@@ -9,12 +9,12 @@
 namespace Base\Data;
 
 /**
- * Class Form represents data in urlencoded form format.
+ * Class Post represents POST query in urlencoded form format.
  * @package Base\Data
  */
-class Form extends Data
+class Post extends Data
 {
-    const CONTENT_TYPE_FORM = ;
+    const CONTENT_TYPE_FORM = "application/x-www-form-urlencoded";
 
     /**
      * Array of POST parameters.
@@ -29,22 +29,7 @@ class Form extends Data
     public function __construct(array $postData)
     {
         $this->postData = $postData;
-        parent::__construct([
-            "Content-Type" => "application/x-www-form-urlencoded",
-            "Content-Length" => $this->contentLength()
-        ]);
-    }
-
-    /**
-     * Creates From from associative array which should contain key-value pairs for POST parameters.
-     * @param array $postData
-     * @return Form
-     */
-    static public function fromDictionary(): Form
-    {
-        $form = new self;
-        $form->postData = $postData;
-        return $form;
+        parent::__construct();
     }
 
     /**

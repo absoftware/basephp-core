@@ -20,16 +20,14 @@ class Response extends HttpResponse
 {
     /**
      * Response constructor.
+     * @param Data|null $content
      * @param int $httpCode
-     * @param HttpHeader $header
-     * @param Data $content
+     * @param HttpHeader|null $header
      */
-    public function __construct(int $httpCode, HttpHeader $header, Data $content)
+    public function __construct(Data $content = null, int $httpCode = 200, HttpHeader $header = null)
     {
-        $contentHttpHeaders = $content->httpHeader()->headers();
-        $responseHttpHeaders = $header->headers();
-        $headers = array_replace_recursive($contentHttpHeaders, $responseHttpHeaders);
-        parent::__construct($httpCode, new HttpHeader($headers), $content);
+        $header = $header ?? new HttpHeader([]);
+        parent::__construct($httpCode, $header->replace($content->httpHeader()), $content);
     }
 
     /**
@@ -37,14 +35,15 @@ class Response extends HttpResponse
      */
     public function display(): void
     {
-        /** @var HttpHeader $httpHeader */
-        $httpHeader = $this->header();
-
-        /** @var array $headers */
-        $headers = $httpHeader ? $httpHeader->headers() : [];
+        // Display HTTP code.
+        $httpCode = $this->httpCode();
+        if ($httpCode > 0)
+        {
+            http_response_code($httpCode);
+        }
 
         // Display headers.
-        foreach ($headers as $key => $value);
+        foreach ($this->header()->headers() as $key => $value)
         {
             header("{$key}: {$value}");
         }

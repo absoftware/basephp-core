@@ -23,16 +23,24 @@ abstract class Data
     protected $httpHeader;
 
     /**
-     * Data constructor.
-     * @param $httpHeader
+     * Encoding of response.
+     * @var string
      */
-    protected function __construct($httpHeader)
+    protected $charset;
+
+    /**
+     * Data constructor.
+     * @param HttpHeader|null $httpHeader
+     * @param string $charset
+     */
+    protected function __construct(HttpHeader $httpHeader = null, string $charset = "")
     {
-        $headers = [
-            "Content-Type" => $this->contentType(),
+        $this->charset = $charset;
+        $dataHttpHeader = new HttpHeader([
+            "Content-Type" => $this->charset ? $this->contentType() : $this->contentType() . "; charset={$this->charset}",
             "Content-Length" => $this->contentLength()
-        ];
-        $this->httpHeader = new HttpHeader(array_merge_recursive($headers, $httpHeader->headers()));
+        ]);
+        $this->httpHeader = $httpHeader ? $dataHttpHeader->replace($httpHeader) : $dataHttpHeader;
     }
 
     /**

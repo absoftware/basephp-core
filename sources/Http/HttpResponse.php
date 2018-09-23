@@ -20,7 +20,7 @@ class HttpResponse
      * HTTP code.
      * @var int
      */
-    protected $httpCode = 0;
+    protected $httpCode;
 
     /**
      * HTTP header.
@@ -40,10 +40,10 @@ class HttpResponse
      * @param HttpHeader $header
      * @param Data $content
      */
-    public function __construct(int $httpCode, HttpHeader $header, Data $content)
+    public function __construct(int $httpCode, HttpHeader $header = null, Data $content = null)
     {
         $this->httpCode = $httpCode;
-        $this->header = $header;
+        $this->header = $header ?? new HttpHeader([]);
         $this->content = $content;
     }
 
@@ -69,7 +69,7 @@ class HttpResponse
      * Content of response.
      * @return Data
      */
-    public function content(): Data
+    public function content(): ?Data
     {
         return $this->content;
     }
