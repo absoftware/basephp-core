@@ -60,9 +60,11 @@ interface ApplicationDelegate
 
     /**
      * Creates instance of visitor.
+     * @param Request $request
+     * @param Session $session
      * @return Visitor
      */
-    function createVisitor(): Visitor;
+    function createVisitor(Request $request, Session $session): Visitor;
 
     /**
      * Returns response for exception which is defined by BasePHP Core.

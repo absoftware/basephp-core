@@ -87,7 +87,7 @@ class Application
             $callbackInfo = $router->callbackInfo($request->method(), $currentPath);
 
             // Check authorization.
-            $visitor = $this->delegate->createVisitor();
+            $visitor = $this->delegate->createVisitor($request, $this->session);
 
             // Create resolver.
             $resolver = new Resolver();
