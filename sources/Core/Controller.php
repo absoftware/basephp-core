@@ -40,40 +40,53 @@ abstract class Controller
     const COMMON_RESOLVER = "controller_common_resolver";
 
     /**
+     * Identifier of visitor in common resources.
+     */
+    const COMMON_VISITOR = "controller_common_visitor";
+
+    /**
      * Current request.
      * @var Request
      */
-    private $request = null;
+    protected $request = null;
 
     /**
      * Interface for template engine.
      * @var Template
      */
-    private $template = null;
+    protected $template = null;
 
     /**
      * Current session.
      * @var Session
      */
-    private $session = null;
+    protected $session = null;
 
     /**
      * Dependency injection resolver.
      * @var Resolver
      */
-    private $resolver = null;
+    protected $resolver = null;
+
+    /**
+     * Visitor.
+     * @var Visitor
+     */
+    private $visitor = null;
 
     /**
      * Controller constructor.
      * @param Request|null $request
      * @param Session|null $session
      * @param Resolver|null $resolver
+     * @param Visitor|null $visitor
      */
-    public function __construct(Request $request = null, Session $session = null, Resolver $resolver = null)
+    public function __construct(Request $request = null, Session $session = null, Resolver $resolver = null, Visitor $visitor = null)
     {
         $this->request = $request ?? Common::singleton()->get(self::COMMON_REQUEST);
         $this->session = $session ?? Common::singleton()->get(self::COMMON_SESSION);
         $this->resolver = $resolver ?? Common::singleton()->get(self::COMMON_RESOLVER);
+        $this->visitor = $visitor ?? Common::singleton()->get(self::COMMON_VISITOR);
     }
 
     /**
@@ -110,6 +123,15 @@ abstract class Controller
     public function setResolverObject(Resolver $resolver)
     {
         $this->resolver = $resolver;
+    }
+
+    /**
+     * Sets visitor object.
+     * @param Visitor $visitor
+     */
+    public function setVisitorObject(Visitor $visitor)
+    {
+        $this->visitor = $visitor;
     }
 
     /**

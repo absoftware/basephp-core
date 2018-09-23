@@ -59,6 +59,12 @@ interface ApplicationDelegate
     function currentRequestPath(Request $request): string;
 
     /**
+     * Creates instance of visitor.
+     * @return Visitor
+     */
+    function createVisitor(): Visitor;
+
+    /**
      * Returns response for exception which is defined by BasePHP Core.
      * @param Request $request
      * @param Exception $exception
