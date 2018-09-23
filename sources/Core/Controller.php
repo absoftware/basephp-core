@@ -313,6 +313,7 @@ abstract class Controller
      * Returns rendered template.
      * @param string|null $templateFile
      * @return string
+     * @throws \ReflectionException
      */
     protected function fetch(string $templateFile = null)
     {

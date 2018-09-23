@@ -14,7 +14,7 @@ namespace Base\Data;
  */
 class Form extends Data
 {
-    const CONTENT_TYPE_FORM = "application/x-www-form-urlencoded";
+    const CONTENT_TYPE_FORM = ;
 
     /**
      * Array of POST parameters.
@@ -24,10 +24,15 @@ class Form extends Data
 
     /**
      * Form constructor.
+     * @param array $postData
      */
-    protected function __construct()
+    public function __construct(array $postData)
     {
-        $this->postData = [];
+        $this->postData = $postData;
+        parent::__construct([
+            "Content-Type" => "application/x-www-form-urlencoded",
+            "Content-Length" => $this->contentLength()
+        ]);
     }
 
     /**
@@ -35,7 +40,7 @@ class Form extends Data
      * @param array $postData
      * @return Form
      */
-    static public function fromDictionary(array $postData): Form
+    static public function fromDictionary(): Form
     {
         $form = new self;
         $form->postData = $postData;

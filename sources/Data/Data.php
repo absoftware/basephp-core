@@ -8,6 +8,8 @@
  */
 namespace Base\Data;
 
+use Base\Http\HttpHeader;
+
 /**
  * Interface Data represents data of any type.
  * @package Base\Data
@@ -15,16 +17,32 @@ namespace Base\Data;
 abstract class Data
 {
     /**
-     * Returns HTTP content type.
-     * @return string
+     * HTTP header associated to this kind of data.
+     * @var HttpHeader|null
      */
-    abstract public function contentType(): string;
+    protected $httpHeader;
 
     /**
-     * Returns raw data.
-     * @return string
+     * Data constructor.
+     * @param $httpHeader
      */
-    abstract function content(): string;
+    protected function __construct($httpHeader)
+    {
+        $headers = [
+            "Content-Type" => $this->contentType(),
+            "Content-Length" => $this->contentLength()
+        ];
+        $this->httpHeader = new HttpHeader(array_merge_recursive($headers, $httpHeader->headers()));
+    }
+
+    /**
+     * Returns HTTP header associated to this kind of data.
+     * @return HttpHeader|null
+     */
+    public function httpHeader(): HttpHeader
+    {
+        return $this->httpHeader;
+    }
 
     /**
      * Returns content length.
@@ -34,6 +52,18 @@ abstract class Data
     {
         return strlen($this->content());
     }
+
+    /**
+     * Returns raw data.
+     * @return string
+     */
+    abstract function content(): string;
+
+    /**
+     * Returns content type for HTTP header.
+     * @return string
+     */
+    abstract function contentType(): string;
 
     /**
      * Returns this object as string.
