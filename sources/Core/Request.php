@@ -9,6 +9,7 @@
 namespace Base\Core;
 
 use Base\Http\HttpRequest;
+use Base\Exceptions\BadRequest;
 
 /**
  * Class Request delivers all information about request.
@@ -140,22 +141,54 @@ class Request extends HttpRequest
 
     /**
      * Gets GET param.
-     * @param $name
+     * @param string $name
      * @return array|float|null|string
      */
-    public function get($name)
+    public function get(string $name)
     {
         return $this->getVariable($_GET, $name);
     }
 
     /**
+     * Gets GET param otherwise throws bad request exception.
+     * @param string $name
+     * @return array|float|null|string
+     * @throws BadRequest
+     */
+    public function requiredGet(string $name)
+    {
+        $param = $this->get($name);
+        if (!$param)
+        {
+            throw new BadRequest("Missing GET param '$name'.");
+        }
+        return $param;
+    }
+
+    /**
      * Gets POST param.
-     * @param $name
+     * @param string $name
      * @return array|float|null|string
      */
-    public function post($name)
+    public function post(string $name)
     {
         return $this->getVariable($_POST, $name);
+    }
+
+    /**
+     * Gets POST param otherwise throws bad request exception.
+     * @param string $name
+     * @return array|float|null|string
+     * @throws BadRequest
+     */
+    public function requiredPost(string $name)
+    {
+        $param = $this->post($name);
+        if (!$param)
+        {
+            throw new BadRequest("Missing POST param '$name'.");
+        }
+        return $param;
     }
 
     /**
