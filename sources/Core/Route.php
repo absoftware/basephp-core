@@ -23,12 +23,6 @@ class Route
     protected $allowedParamCharacters = '[a-zA-Z0-9\_\-]+';
 
     /**
-     * Route identifier unique across all routes.
-     * @var string
-     */
-    protected $routeId;
-
-    /**
      * HTTP request method.
      * @var string
      */
@@ -60,19 +54,9 @@ class Route
             throw new ArgumentException("pattern", "Path pattern '{$pattern}' is invalid because contains not allowed characters.");
         }
 
-        $this->routeId = "{$method}:{$pattern}";
         $this->method = $method;
         $this->pattern = $pattern;
         $this->callback = $callback;
-    }
-
-    /**
-     * Returns route identifier unique across all routes.
-     * @return string Route identifier.
-     */
-    public function routeId()
-    {
-        return $this->routeId;
     }
 
     /**
@@ -104,16 +88,17 @@ class Route
 
     /**
      * Returns PHP regex created from path pattern.
+     * @param string $patternPrefix
      * @param bool $caseSensitive
      * @return string
      */
-    public function regex(bool $caseSensitive = false)
+    public function regex(string $patternPrefix = "", bool $caseSensitive = false)
     {
         // Replace "{parameter}" with "(?<parameter>[a-zA-Z0-9\_\-]+)".
         $regex = preg_replace(
             '/{('. $this->allowedParamCharacters .')}/',
             '(?<$1>' . $this->allowedParamCharacters . ')',
-            $this->pattern
+            $patternPrefix . $this->pattern
         );
 
         // Return route as regex.
@@ -125,19 +110,20 @@ class Route
      * Matches path pattern to given path.
      * @param string $method HTTP request method.
      * @param string $path Real path from request.
+     * @param string $patternPrefix
      * @param bool $caseSensitive
      * @return array|bool
      *      Returns matched parameters as array or false if path doesn't match to path pattern.
      *      Empty array means empty list of parameters.
      */
-    public function match(string $method, string $path, bool $caseSensitive = false)
+    public function match(string $method, string $path, string $patternPrefix = "", bool $caseSensitive = false)
     {
         if (!$method || $method != $this->method())
         {
             return false;
         }
 
-        $result = preg_match($this->regex($caseSensitive), $path, $matches);
+        $result = preg_match($this->regex($patternPrefix, $caseSensitive), $path, $matches);
         if ($result !== 1)
         {
             return false;

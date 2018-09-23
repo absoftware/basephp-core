@@ -24,11 +24,10 @@ interface ApplicationDelegate
     function open(): void;
 
     /**
-     * Registers all routes for project.
-     * @param Router $router
-     *      Router object which has to be used to register routes.
+     * Returns router.
+     * @return Router
      */
-    function registerRoutes(Router $router): void;
+    function router(): Router;
     
     /**
      * Returns current request path. It depends on custom

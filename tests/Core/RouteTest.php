@@ -66,7 +66,7 @@ final class RouteTest extends TestCase
             
             // Execute test.
             $routeObject = new Route(HttpRequest::GET, $pattern, "ExampleClass::method");
-            $params = $routeObject->match(HttpRequest::GET, $path, $caseSensitive);
+            $params = $routeObject->match(HttpRequest::GET, $path, "", $caseSensitive);
             $paramCount = is_array($params) ? count($params) : false;
             
             // Check result.

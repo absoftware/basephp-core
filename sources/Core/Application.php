@@ -14,9 +14,7 @@ use Base\Tools\Resolver;
 
 /**
  * Class Application is main class of BasePHP Framework.
- * It creates all dependencies including router and request objects,
- * creates controller and executes its code,
- * renders response returned by controller and checks exceptions.
+ * It creates controller and executes its code, renders response returned by controller and checks exceptions.
  * @package Base\Core
  */
 class Application
@@ -32,6 +30,12 @@ class Application
      * @var Config
      */
     protected $config;
+
+    /**
+     * Router.
+     * @var Router
+     */
+    protected $router;
 
     /**
      * Request.
@@ -55,13 +59,15 @@ class Application
      * Application constructor.
      * @param ApplicationDelegate $delegate
      * @param Config $config
+     * @param Router $router
      * @param Session|null $session
      * @throws \Base\Exceptions\ArgumentException
      */
-    public function __construct(ApplicationDelegate $delegate, Config $config, Session $session = null)
+    public function __construct(ApplicationDelegate $delegate, Config $config, Router $router, Session $session = null)
     {
         $this->delegate = $delegate;
         $this->config = $config;
+        $this->router = $router;
         $this->request = new Request($this->config->ports());
         $this->session = $session ?? new Session($this->config->sessionTime(), $this->delegate->sessionDomain($this->request));
     }
@@ -76,19 +82,13 @@ class Application
         {
             // Open client's resources.
             $this->delegate->open();
-
-            // Create instance of router.
-            $router = new Router();
-            
-            // Register all routes known in project. This operation is delegated to client.
-            $this->delegate->registerRoutes($router);
             
             // Get current request path. It may depend on custom rewrite rules of url
             // or custom assumptions of project so it is delegated to client.
             $currentPath = $this->delegate->currentRequestPath($this->request);
             
             // Search callback for current request.
-            $callbackInfo = $router->callbackInfo($this->request->method(), $currentPath);
+            $callbackInfo = $this->router->callbackInfo($this->request->method(), $currentPath);
 
             // Create resolver.
             $resolver = new Resolver();

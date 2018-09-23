@@ -65,13 +65,13 @@ abstract class Data
      * Returns raw data.
      * @return string
      */
-    abstract function content(): string;
+    abstract public function content(): string;
 
     /**
      * Returns content type for HTTP header.
      * @return string
      */
-    abstract function contentType(): string;
+    abstract public function contentType(): string;
 
     /**
      * Returns this object as string.

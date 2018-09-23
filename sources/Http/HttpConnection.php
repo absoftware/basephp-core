@@ -22,25 +22,25 @@ class HttpConnection
      * Initial HTTP request associated with this connection.
      * @var HttpRequest
      */
-    private $httpRequest;
+    protected $httpRequest;
 
     /**
      * Final response of connection.
      * @var HttpResponse
      */
-    private $httpResponse;
+    protected $httpResponse;
 
     /**
      * CURL error code.
      * @var int
      */
-    private $errorCode;
+    protected $errorCode;
 
     /**
      * CURL error message.
      * @var string
      */
-    private $errorMessage;
+    protected $errorMessage;
 
     /**
      * Headers from response.

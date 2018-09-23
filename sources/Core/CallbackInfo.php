@@ -29,6 +29,12 @@ class CallbackInfo
     protected $params;
 
     /**
+     * Array of authorization identifiers.
+     * @var string
+     */
+    protected $authorizationIds;
+
+    /**
      * CallbackInfo constructor.
      * @param string $callback
      *      String describing whole callback.
@@ -36,11 +42,14 @@ class CallbackInfo
      *      More complex example may look like "My\Namespace\Controller::method1<method2<method3".
      * @param array $params
      *      Parameters for last method from callback.
+     * @param array
+     *      Array of authorization identifiers.
      */
-    public function __construct(string $callback, array $params = [])
+    public function __construct(string $callback, array $params = [], array $authorizationIds = [])
     {
         $this->callback = $callback;
         $this->params = $params;
+        $this->authorizationIds = $authorizationIds;
     }
 
     /**
@@ -60,6 +69,15 @@ class CallbackInfo
     public function callback(): string
     {
         return $this->callback;
+    }
+
+    /**
+     * Returns array of authorization identifiers.
+     * @return array
+     */
+    public function authorizationIds(): array
+    {
+        return $this->authorizationIds;
     }
 
     /**
