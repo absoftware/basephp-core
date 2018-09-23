@@ -60,7 +60,7 @@ class HttpResponse
      * Returns HTTP header.
      * @return HttpHeader
      */
-    public function headers(): HttpHeader
+    public function header(): HttpHeader
     {
         return $this->header;
     }
