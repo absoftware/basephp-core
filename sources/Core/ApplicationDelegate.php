@@ -11,7 +11,9 @@ namespace Base\Core;
 use Base\Exceptions\Exception;
 
 /**
- * Interface ApplicationDelegate
+ * Interface ApplicationDelegate. Derived classes must not throw exceptions
+ * in their constructors. All initialization which throws exceptions
+ * should be implemented in open() method.
  * @package Base\Core
  */
 interface ApplicationDelegate
@@ -20,25 +22,9 @@ interface ApplicationDelegate
      * It is good place to open common resources for all controllers
      * like database connection or other settings. They should be owned
      * by application delegate.
-     */
-    function open(): void;
-
-    /**
-     * Returns router.
-     * @return Router
-     */
-    function router(): Router;
-    
-    /**
-     * Returns current request path. It depends on custom
-     * project settings or custom rewrite rules for incoming URL.
-     * This path will be processed by router.
      * @param Request $request
-     *      Request object which can be used to get current request path.
-     * @return string
-     *      Current request path.
      */
-    function currentRequestPath(Request $request): string;
+    function open(Request $request): void;
 
     /**
      * Returns domain for current session.
@@ -55,12 +41,30 @@ interface ApplicationDelegate
     function sessionDomain(Request $request): ?string;
 
     /**
+     * Creates instance of main router. Router is not added to application
+     * as dependency because it has to be created where exception handling is available.
+     * @return Router
+     */
+    function createRouter(): Router;
+    
+    /**
+     * Returns current request path. It depends on custom
+     * project settings or custom rewrite rules for incoming URL.
+     * This path will be processed by router.
+     * @param Request $request
+     *      Request object which can be used to get current request path.
+     * @return string
+     *      Current request path.
+     */
+    function currentRequestPath(Request $request): string;
+
+    /**
      * Returns response for exception which is defined by BasePHP Core.
      * @param Request $request
      * @param Exception $exception
      * @return Response
      */
-    function responseForException(Request $request, Exception $exception): Response;
+    function responseForException(?Request $request, Exception $exception): Response;
 
     /**
      * Returns response for throwable.
@@ -68,7 +72,7 @@ interface ApplicationDelegate
      * @param \Throwable $throwable
      * @return Response
      */
-    function responseForThrowable(Request $request, \Throwable $throwable): Response;
+    function responseForThrowable(?Request $request, \Throwable $throwable): Response;
 
     /**
      * It is good place to close common resources which are owned by application delegate.

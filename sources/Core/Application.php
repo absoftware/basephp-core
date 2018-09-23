@@ -32,18 +32,6 @@ class Application
     protected $config;
 
     /**
-     * Router.
-     * @var Router
-     */
-    protected $router;
-
-    /**
-     * Request.
-     * @var Request
-     */
-    protected $request;
-
-    /**
      * Session.
      * @var Session
      */
@@ -59,17 +47,13 @@ class Application
      * Application constructor.
      * @param ApplicationDelegate $delegate
      * @param Config $config
-     * @param Router $router
      * @param Session|null $session
-     * @throws \Base\Exceptions\ArgumentException
      */
-    public function __construct(ApplicationDelegate $delegate, Config $config, Router $router, Session $session = null)
+    public function __construct(ApplicationDelegate $delegate, Config $config, Session $session = null)
     {
         $this->delegate = $delegate;
         $this->config = $config;
-        $this->router = $router;
-        $this->request = new Request($this->config->ports());
-        $this->session = $session ?? new Session($this->config->sessionTime(), $this->delegate->sessionDomain($this->request));
+        $this->session = $session;
     }
 
     /**
@@ -78,26 +62,38 @@ class Application
      */
     public function run(): void
     {
+        // Initialize request.
+        $request = null;
+
         try
         {
+            // Create request.
+            $request = new Request($this->config->ports());
+
             // Open client's resources.
-            $this->delegate->open();
-            
+            $this->delegate->open($request);
+
+            // Create session if it was not delivered from client.
+            $this->session = $this->session ?? new Session($this->config->sessionTime(), $this->delegate->sessionDomain($request));
+
+            // Create router.
+            $router = $this->delegate->createRouter();
+
             // Get current request path. It may depend on custom rewrite rules of url
             // or custom assumptions of project so it is delegated to client.
-            $currentPath = $this->delegate->currentRequestPath($this->request);
+            $currentPath = $this->delegate->currentRequestPath($request);
             
             // Search callback for current request.
-            $callbackInfo = $this->router->callbackInfo($this->request->method(), $currentPath);
+            $callbackInfo = $router->callbackInfo($request->method(), $currentPath);
 
             // Create resolver.
             $resolver = new Resolver();
-            $resolver->setDefaultTypeValue("Base\\Core\\Request", $this->request);
+            $resolver->setDefaultTypeValue("Base\\Core\\Request", $request);
             $resolver->setDefaultTypeValue("Base\\Core\\Session", $this->session);
             $resolver->setDefaultTypeValue("Base\\Tools\\Resolver", $resolver);
 
             // Set common resources for controllers. It helps to create new controllers and views easily.
-            Common::singleton()->set(Controller::COMMON_REQUEST, $this->request);
+            Common::singleton()->set(Controller::COMMON_REQUEST, $request);
             Common::singleton()->set(Controller::COMMON_SESSION, $this->session);
             Common::singleton()->set(Controller::COMMON_RESOLVER, $resolver);
 
@@ -123,7 +119,7 @@ class Application
         {
             $response = $this->controller ? $this->controller->responseForException($exception) : null;
             if (!$response) {
-                $response = $this->delegate->responseForException($this->request, $exception);
+                $response = $this->delegate->responseForException($request, $exception);
             }
             $response->display();
         }
@@ -131,7 +127,7 @@ class Application
         {
             $response = $this->controller ? $this->controller->responseForThrowable($throwable) : null;
             if (!$response) {
-                $response = $this->delegate->responseForThrowable($this->request, $throwable);
+                $response = $this->delegate->responseForThrowable($request, $throwable);
             }
             $response->display();
         }
