@@ -10,7 +10,6 @@ namespace Base\Core;
 
 use Base\Exceptions\Exception;
 use Base\Exceptions\InternalError;
-use Base\Responses\Response;
 use Base\Tools\Resolver;
 
 /**

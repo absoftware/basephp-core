@@ -9,7 +9,6 @@
 namespace Base\Core;
 
 use Base\Exceptions\Exception;
-use Base\Responses\Response;
 
 /**
  * Interface ApplicationDelegate

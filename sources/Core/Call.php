@@ -8,7 +8,7 @@
  */
 namespace Base\Core;
 
-use Base\Responses\Response;
+use Base\Core\Response;
 
 /**
  * Class Call holds controller, method and list of arguments.
