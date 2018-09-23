@@ -56,7 +56,8 @@ class Application
      * Application constructor.
      * @param ApplicationDelegate $delegate
      * @param Config $config
-     * @param Session $session
+     * @param Session|null $session
+     * @throws \Base\Exceptions\ArgumentException
      */
     public function __construct(ApplicationDelegate $delegate, Config $config, Session $session = null)
     {

@@ -8,25 +8,29 @@
  */
 namespace Base\Core;
 
+use Base\Http\HttpRequest;
+
 /**
  * Class Request delivers all information about request.
  * @package Base\Core
  */
-class Request
+class Request extends HttpRequest
 {
     /**
      * Configuration of ports.
      * @var Ports|null
      */
-    protected $ports = null;
+    protected $ports;
 
     /**
      * Request constructor.
      * @param Ports|null $ports
+     * @throws \Base\Exceptions\ArgumentException
      */
     public function __construct(Ports $ports = null)
     {
         $this->ports = $ports ?? new Ports();
+        parent::__construct($this->url(), $this->method(), new Header());
     }
 
     /**
@@ -69,6 +73,15 @@ class Request
     function isAjax(): bool
     {
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+    }
+
+    /**
+     * Full URL of request.
+     * @return string
+     */
+    public function url(): string
+    {
+        return $this->protocol() . $this->host() . $this->uri();
     }
 
     /**
