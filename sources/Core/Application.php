@@ -8,6 +8,7 @@
  */
 namespace Base\Core;
 
+use Base\Exceptions\AuthorizationException;
 use Base\Exceptions\Exception;
 use Base\Exceptions\InternalError;
 use Base\Tools\Resolver;
@@ -86,8 +87,12 @@ class Application
             // Search callback for current request.
             $callbackInfo = $router->callbackInfo($request->method(), $currentPath);
 
-            // Check authorization.
+            // Create and authorize visitor.
             $visitor = $this->delegate->createVisitor($request, $this->session);
+            if (!$visitor->isAuthorized($callbackInfo->authorizationIds()))
+            {
+                throw new AuthorizationException("Authorization exception.");
+            }
 
             // Create resolver.
             $resolver = new Resolver();

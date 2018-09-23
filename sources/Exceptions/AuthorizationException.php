@@ -1,7 +1,7 @@
 <?php
 /**
  * @project BasePHP Core
- * @file AuthenticationException.php created by Ariel Bogdziewicz on 22/09/2018
+ * @file AuthorizationException.php created by Ariel Bogdziewicz on 22/09/2018
  * @author Ariel Bogdziewicz
  * @copyright Copyright © 2018 Ariel Bogdziewicz. All rights reserved.
  * @license MIT
@@ -9,14 +9,14 @@
 namespace Base\Exceptions;
 
 /**
- * Class AuthenticationException defines error caused by wrong authentication process.
- * It should be thrown when visitor uses wrong credentials.
+ * Class AuthorizationException defines error caused by wrong authorization of visitor.
+ * It is thrown when visitor tries to visit resources which he is not permitted to get.
  * @package Base\Exceptions
  */
-class AuthenticationException extends Exception
+class AuthorizationException extends Exception
 {
     /**
-     * AuthenticationException constructor.
+     * AuthorizationException constructor.
      * @param string $message
      * @param int $code
      * @param \Exception|null $previous
