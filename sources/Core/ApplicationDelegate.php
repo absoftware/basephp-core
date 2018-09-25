@@ -59,12 +59,28 @@ interface ApplicationDelegate
     function currentRequestPath(Request $request): string;
 
     /**
+     * Creates subpage which represents part of website or API indicated by subdomain
+     * or external domain with separated set of authorization settings for visitor.
+     * @param Request $request
+     * @param Session $session
+     * @return Subpage
+     */
+    function createSubpage(Request $request, Session $session): Subpage;
+
+    /**
      * Creates instance of visitor.
      * @param Request $request
      * @param Session $session
+     * @param Subpage $subpage
      * @return Visitor
      */
-    function createVisitor(Request $request, Session $session): Visitor;
+    function createVisitor(Request $request, Session $session, Subpage $subpage): Visitor;
+
+    /**
+     * Creates authorization service. Implementation depends on client.
+     * @return Authorization
+     */
+    function createAuthorizationService(): Authorization;
 
     /**
      * Returns response for exception which is defined by BasePHP Core.

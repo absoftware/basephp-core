@@ -19,11 +19,4 @@ interface Visitor
      * @return bool
      */
     function isLoggedIn(): bool;
-
-    /**
-     * Returns false if visitor is not authorized for at least one authorization identifier.
-     * @param array $authorizationIds
-     * @return bool
-     */
-    function isAuthorized(array $authorizationIds): bool;
 }

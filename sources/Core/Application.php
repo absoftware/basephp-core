@@ -83,21 +83,26 @@ class Application
             // Get current request path. It may depend on custom rewrite rules of url
             // or custom assumptions of project so it is delegated to client.
             $currentPath = $this->delegate->currentRequestPath($request);
+
+            // Create subpage.
+            $subpage = $this->delegate->createSubpage($request, $this->session);
+
+            // Create visitor.
+            $visitor = $this->delegate->createVisitor($request, $this->session, $subpage);
             
             // Search callback for current request.
             $callbackInfo = $router->callbackInfo($request->method(), $currentPath);
 
-            // Create and authorize visitor.
-            $visitor = $this->delegate->createVisitor($request, $this->session);
-            if (!$visitor->isAuthorized($callbackInfo->authorizationIds()))
-            {
-                throw new AuthorizationException("Authorization exception.");
-            }
+            // Create authorization service.
+            $authorization = $this->delegate->createAuthorizationService();
+            $authorization->authorize($request, $this->session, $subpage, $visitor, $callbackInfo->authorizationIds());
 
             // Create resolver.
             $resolver = new Resolver();
+            $resolver->setDefaultTypeValue("Base\\Core\\Authorization", $authorization);
             $resolver->setDefaultTypeValue("Base\\Core\\Request", $request);
             $resolver->setDefaultTypeValue("Base\\Core\\Session", $this->session);
+            $resolver->setDefaultTypeValue("Base\\Core\\Subpage", $subpage);
             $resolver->setDefaultTypeValue("Base\\Core\\Visitor", $visitor);
             $resolver->setDefaultTypeValue("Base\\Tools\\Resolver", $resolver);
 
