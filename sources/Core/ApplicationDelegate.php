@@ -9,6 +9,7 @@
 namespace Base\Core;
 
 use Base\Exceptions\Exception;
+use Base\Tools\Resolver;
 
 /**
  * Interface ApplicationDelegate. Derived classes must not throw exceptions
@@ -22,9 +23,11 @@ interface ApplicationDelegate
      * It is good place to open common resources for all controllers
      * like database connection or other settings. They should be owned
      * by application delegate.
+     * @param Config $config
      * @param Request $request
+     * @param Resolver $resolver
      */
-    function open(Request $request): void;
+    function open(Config $config, Request $request, Resolver $resolver): void;
 
     /**
      * Returns domain for current session.

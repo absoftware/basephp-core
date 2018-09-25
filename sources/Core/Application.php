@@ -71,8 +71,11 @@ class Application
             // Create request.
             $request = new Request($this->config->ports());
 
+            // Create resolver.
+            $resolver = new Resolver();
+
             // Open client's resources.
-            $this->delegate->open($request);
+            $this->delegate->open($this->config, $request, $resolver);
 
             // Create session if it was not delivered from client.
             $this->session = $this->session ?? new Session($this->config->sessionTime(), $this->delegate->sessionDomain($request));
@@ -97,8 +100,7 @@ class Application
             $authorization = $this->delegate->createAuthorizationService();
             $authorization->authorize($request, $this->session, $subpage, $visitor, $callbackInfo->authorizationIds());
 
-            // Create resolver.
-            $resolver = new Resolver();
+            // Set defaults for resolver.
             $resolver->setDefaultTypeValue("Base\\Core\\Authorization", $authorization);
             $resolver->setDefaultTypeValue("Base\\Core\\Request", $request);
             $resolver->setDefaultTypeValue("Base\\Core\\Session", $this->session);
