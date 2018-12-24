@@ -73,4 +73,13 @@ class HttpResponse
     {
         return $this->content;
     }
+
+    /**
+     * Returns response as string.
+     */
+    public function __toString()
+    {
+        $data = $this->content();
+        return $data ? $data->content() : "";
+    }
 }
