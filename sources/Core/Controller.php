@@ -95,7 +95,7 @@ abstract class Controller
      * Visitor.
      * @var Visitor
      */
-    private $visitor = null;
+    protected $visitor = null;
 
     /**
      * Controller constructor.
