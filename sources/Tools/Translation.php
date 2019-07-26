@@ -12,12 +12,12 @@ namespace Base\Tools;
  * Class Translation.
  *
  * TODO: How should be translations identified? Through ID or text from default translation?
- * TODO: ID is preferred because there is no need to change all textes in app when default translation is changed.
- * TODO: Implement class: get/set translations, language codes, fallbacks.
+ * TODO: ID is preferred because there is no need to change all texts in app when default translation is changed.
+ * TODO: Implement class: get/set translations, language codes, fallback.
  * TODO: Arguments with different order in translation.
  * TODO: Numbers and other words depending on situation, for example plural/singular.
  * TODO: Write module which will help to manage translations for project/controller/view.
- * TODO: Add extentions for template engines PhpTemplate/Smarty.
+ * TODO: Add extensions for template engines PhpTemplate/Smarty.
  *
  * @package Base\Tools
  */
