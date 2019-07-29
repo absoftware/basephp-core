@@ -27,7 +27,11 @@ class Response extends HttpResponse
     public function __construct(Data $content = null, int $httpCode = 200, HttpHeader $header = null)
     {
         $header = $header ?? new HttpHeader([]);
-        parent::__construct($httpCode, $header->replace($content->httpHeader()), $content);
+        if ($content !== null)
+        {
+            $header = $header->replace($content->httpHeader());
+        }
+        parent::__construct($httpCode, $header, $content);
     }
 
     /**

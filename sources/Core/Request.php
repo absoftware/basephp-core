@@ -192,6 +192,26 @@ class Request extends HttpRequest
     }
 
     /**
+     * Gets POST array transformed into form array.
+     * @return array Transformed POST array.
+     */
+    public function formData(): array
+    {
+        if (!is_array($_POST))
+        {
+            return [];
+        }
+
+        $form = [];
+        foreach ($_POST as $key => $value)
+        {
+            $form[$key] = $this->getVariable($_POST, $key);
+        }
+
+        return $form;
+    }
+
+    /**
      * Private method used to process GET and POST variables.
      * @param $array
      * @param $name

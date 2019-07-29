@@ -72,7 +72,7 @@ class Session
      * @param string $name
      * @return mixed
      */
-    public function get(string $name): mixed
+    public function get(string $name)
     {
         if (isset($_SESSION[$name]))
         {
@@ -89,7 +89,7 @@ class Session
      * @param string $name
      * @param mixed $value
      */
-    public function set(string $name, mixed $value): void
+    public function set(string $name, $value): void
     {
         $_SESSION[$name] = $value;
     }
