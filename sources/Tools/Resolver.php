@@ -9,6 +9,7 @@
 namespace Base\Tools;
 
 use Base\Exceptions\InternalError;
+use ReflectionException;
 
 /**
  * Class Resolver allows to use automated dependency injection based on reflection.
@@ -20,13 +21,13 @@ class Resolver
      * Default values for specific parameters in constructor of specific classes.
      * @var array
      */
-    private $defaultClassParameterValues = [];
+    private array $defaultClassParameterValues = [];
 
     /**
      * Default values for specific types of parameters.
      * @var array
      */
-    private $defaultTypeValues = [];
+    private array $defaultTypeValues = [];
 
     /**
      * Sets default value for specific parameter in constructor of given class.
@@ -54,9 +55,9 @@ class Resolver
      * @param string $className Full class name together with namespace like 'My\Namespace\ClassName'.
      * @return object New object.
      * @throws InternalError
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function create(string $className)
+    public function create(string $className): object
     {
         // Get reflection for given class name.
         $class = new \ReflectionClass($className);
@@ -88,10 +89,10 @@ class Resolver
                 // Get default value for specific parameter in specific class.
                 $dependencies[] = $this->defaultClassParameterValues[$className][$paramName];
             }
-            else if (isset($this->defaultTypeValues[(string)$paramType]))
+            else if ($paramType && isset($this->defaultTypeValues[$paramType->getName()]))
             {
                 // Get default value for specific type.
-                $dependencies[] = $this->defaultTypeValues[(string)$paramType];
+                $dependencies[] = $this->defaultTypeValues[$paramType->getName()];
             }
             else if ($paramClass)
             {

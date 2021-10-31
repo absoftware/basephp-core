@@ -25,5 +25,5 @@ interface Authorization
      * @param array $authorizationIds
      * @throws AuthorizationException
      */
-    function authorize(Request $request, Session $session, Subpage $subpage, Visitor $visitor, array $authorizationIds): void;
+    public function authorize(Request $request, Session $session, Subpage $subpage, Visitor $visitor, array $authorizationIds): void;
 }
