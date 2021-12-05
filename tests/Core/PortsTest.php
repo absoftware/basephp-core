@@ -14,21 +14,27 @@ use PHPUnit\Framework\TestCase;
 
 final class PortsTest extends TestCase
 {
-    public function testDefaultConstructor()
+    public function testDefaultConstructor(): void
     {
         $ports = new Ports();
-        $this->assertTrue($ports->defaultHttpPort() == 80, "Default HTTP port is not 80.");
-        $this->assertTrue($ports->defaultHttpsPort() == 443, "Default HTTPS port is not 443.");
+        $this->assertEquals(80, $ports->defaultHttpPort(), "Default HTTP port is not 80.");
+        $this->assertEquals(443, $ports->defaultHttpsPort(), "Default HTTPS port is not 443.");
     }
-    
-    public function testConstructorArguments()
+
+    /**
+     * @throws ArgumentException
+     */
+    public function testConstructorArguments(): void
     {
         $ports = new Ports(8080, 8443);
-        $this->assertTrue($ports->defaultHttpPort() == 8080, "Default HTTP port is not 8080.");
-        $this->assertTrue($ports->defaultHttpsPort() == 8443, "Default HTTPS port is not 8443.");
+        $this->assertEquals(8080, $ports->defaultHttpPort(), "Default HTTP port is not 8080.");
+        $this->assertEquals(8443, $ports->defaultHttpsPort(), "Default HTTPS port is not 8443.");
     }
-    
-    public function testRegisteredPorts()
+
+    /**
+     * @throws ArgumentException
+     */
+    public function testRegisteredPorts(): void
     {
         $ports = new Ports(8080, 8443);
         $ports->registerHttpPort(9080);

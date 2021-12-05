@@ -11,28 +11,21 @@ namespace Base\Core;
 /**
  * Class CallbackInfo represents callback description and list of parameters.
  * It contains all information needed to execute callback of route.
- * @package Base\Core
  */
 class CallbackInfo
 {
     /**
      * String describing whole callback.
-     * For example it may look like "My\Namespace\Controller::method1<method2<method3".
+     * For example, it may look like "My\Namespace\Controller::method1<method2<method3".
      * @var string
      */
-    protected $callback;
+    protected string $callback;
 
     /**
      * Parameters of method.
      * @var array
      */
-    protected $params;
-
-    /**
-     * Array of authorization identifiers.
-     * @var string
-     */
-    protected $authorizationIds;
+    protected array $params;
 
     /**
      * CallbackInfo constructor.
@@ -42,24 +35,21 @@ class CallbackInfo
      *      More complex example may look like "My\Namespace\Controller::method1<method2<method3".
      * @param array $params
      *      Parameters for last method from callback.
-     * @param array
-     *      Array of authorization identifiers.
      */
-    public function __construct(string $callback, array $params = [], array $authorizationIds = [])
+    public function __construct(string $callback, array $params = [])
     {
         $this->callback = $callback;
         $this->params = $params;
-        $this->authorizationIds = $authorizationIds;
     }
 
     /**
      * Returns true if callback has valid syntax.
      * @return bool
      */
-    public function isValid()
+    public function isValid(): bool
     {
         $callbackArray = explode("::", $this->callback);
-        return is_array($callbackArray) && count($callbackArray) == 2 && $callbackArray[0] && $callbackArray[1];
+        return is_array($callbackArray) && count($callbackArray) === 2 && $callbackArray[0] && $callbackArray[1];
     }
 
     /**
@@ -72,19 +62,10 @@ class CallbackInfo
     }
 
     /**
-     * Returns array of authorization identifiers.
-     * @return array
-     */
-    public function authorizationIds(): array
-    {
-        return $this->authorizationIds;
-    }
-
-    /**
      * Returns class name of callback or false if callback is not valid.
      * @return bool|string
      */
-    public function className()
+    public function className(): bool|string
     {
         if (!$this->isValid())
         {
@@ -98,7 +79,7 @@ class CallbackInfo
      * Returns method name of callback or false if callback is not valid.
      * @return bool|string
      */
-    public function classMethod()
+    public function classMethod(): bool|string
     {
         if (!$this->isValid())
         {
@@ -109,10 +90,9 @@ class CallbackInfo
     }
 
     /**
-     * Parameters of method.
      * @return array
      */
-    public function params(): array
+    public function getParams(): array
     {
         return $this->params;
     }

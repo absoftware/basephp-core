@@ -12,14 +12,17 @@ use Base\Exceptions\ArgumentException;
 
 class Ports
 {
-    protected $httpPorts = [80];
-    protected $defaultHttpPort = 80;
-    protected $httpsPorts = [443];
-    protected $defaultHttpsPort = 443;
-    
+    protected array $httpPorts = [80];
+    protected int $defaultHttpPort = 80;
+    protected array $httpsPorts = [443];
+    protected int $defaultHttpsPort = 443;
+
+    /**
+     * @throws ArgumentException
+     */
     public function __construct(int $defaultHttpPort = 80, int $defaultHttpsPort = 443)
     {
-        if ($defaultHttpPort == $defaultHttpsPort)
+        if ($defaultHttpPort === $defaultHttpsPort)
         {
             throw new ArgumentException("defaultHttpsPort", "Port cannot be defined as HTTP and HTTPS port for both at once.");
         }
@@ -28,82 +31,119 @@ class Ports
         $this->setDefaultHttpPort($defaultHttpPort);
         $this->setDefaultHttpsPort($defaultHttpsPort);
     }
-    
-    public function defaultHttpPort()
+
+    /**
+     * @return int
+     */
+    public function defaultHttpPort(): int
     {
         return $this->defaultHttpPort;
     }
-    
-    public function defaultHttpsPort()
+
+    /**
+     * @return int
+     */
+    public function defaultHttpsPort(): int
     {
         return $this->defaultHttpsPort;
     }
-    
-    public function httpPorts()
+
+    /**
+     * @return int[]
+     */
+    public function httpPorts(): array
     {
         return $this->httpPorts;
     }
-    
-    public function httpsPorts()
+
+    /**
+     * @return int[]
+     */
+    public function httpsPorts(): array
     {
         return $this->httpsPorts;
     }
-    
-    public function registerHttpPort(int $httpPort)
+
+    /**
+     * @throws ArgumentException
+     */
+    public function registerHttpPort(int $httpPort): void
     {
         $this->validatePort("httpPort", $httpPort, $this->httpPorts, $this->httpsPorts);
         $this->registerPort($httpPort, $this->httpPorts);
     }
-    
-    public function registerHttpsPort(int $httpsPort)
+
+    /**
+     * @throws ArgumentException
+     */
+    public function registerHttpsPort(int $httpsPort): void
     {
         $this->validatePort("httpsPort", $httpsPort, $this->httpsPorts, $this->httpPorts);
         $this->registerPort($httpsPort, $this->httpsPorts);
     }
-    
-    private function registerPort(int $port, array &$ports)
+
+    /**
+     * @param int $port
+     * @param array $ports
+     */
+    private function registerPort(int $port, array &$ports): void
     {
-        if (!in_array($port, $ports))
+        if (!in_array($port, $ports, true))
         {
             $ports[] = $port;
         }
     }
-    
-    public function setDefaultHttpPort(int $httpPort)
+
+    /**
+     * @param int $httpPort
+     * @throws ArgumentException
+     */
+    public function setDefaultHttpPort(int $httpPort): void
     {
         $this->validatePort("httpPort", $httpPort, $this->httpPorts, $this->httpsPorts);
         $this->setDefaultPort($httpPort, $this->httpPorts, $this->defaultHttpPort);
     }
-    
-    public function setDefaultHttpsPort(int $httpsPort)
+
+    /**
+     * @throws ArgumentException
+     */
+    public function setDefaultHttpsPort(int $httpsPort): void
     {
         $this->validatePort("httpsPort", $httpsPort, $this->httpsPorts, $this->httpPorts);
         $this->setDefaultPort($httpsPort, $this->httpsPorts, $this->defaultHttpsPort);
     }
-    
-    private function setDefaultPort(int $port, array &$ports, int &$curentDefaultPort)
-    {        
-        for ($i = 0; $i < count($ports); ++$i)
+
+    /**
+     * @param int $port
+     * @param array $ports
+     * @param int $currentDefaultPort
+     */
+    private function setDefaultPort(int $port, array &$ports, int &$currentDefaultPort): void
+    {
+        for ($i = 0, $count = count($ports); $i < $count; ++$i)
         {
-            if ($ports[$i] === $curentDefaultPort)
+            if ($ports[$i] === $currentDefaultPort)
             {
-                $curentDefaultPort = $port;
+                $currentDefaultPort = $port;
                 $ports[$i] = $port;
                 return;
             }
         }
-        
-        $curentDefaultPort = $port;
+
+        $currentDefaultPort = $port;
         $ports[] = $port;
     }
-    
-    private function validatePort(string $argumentName, int $port, array $hereWillBeAdded, array $secondPortArray)
+
+    /**
+     * @throws ArgumentException
+     */
+    private function validatePort(string $argumentName, int $port, array $hereWillBeAdded, array $secondPortArray): void
     {
         if ($port < 0)
         {
             throw new ArgumentException($argumentName, "Port cannot be negative.");
         }
-        if (in_array($port, $secondPortArray))
+        if (in_array($port, $secondPortArray, true))
         {
             throw new ArgumentException($argumentName, "Port cannot be defined as HTTP and HTTPS port for both at once.");
         }

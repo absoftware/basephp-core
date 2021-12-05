@@ -53,11 +53,11 @@ class Resolver
     /**
      * Creates instance of class with given name.
      * @param string $className Full class name together with namespace like 'My\Namespace\ClassName'.
-     * @return object New object.
+     * @return mixed New object.
      * @throws InternalError
      * @throws ReflectionException
      */
-    public function create(string $className): object
+    public function create(string $className): mixed
     {
         // Get reflection for given class name.
         $class = new \ReflectionClass($className);

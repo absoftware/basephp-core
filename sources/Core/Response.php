@@ -14,7 +14,6 @@ use Base\Http\HttpResponse;
 
 /**
  * Class Response represents Application's output HTTP response.
- * @package Base\Core
  */
 class Response extends HttpResponse
 {

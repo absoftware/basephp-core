@@ -1,7 +1,7 @@
 <?php
 /**
  * @project BasePHP Core
- * @file Session.php created by Ariel Bogdziewicz on 29/07/2018
+ * @file BaseSession.php created by Ariel Bogdziewicz on 29/07/2018
  * @author Ariel Bogdziewicz
  * @copyright Copyright © 2018 Ariel Bogdziewicz. All rights reserved.
  * @license MIT
@@ -9,34 +9,33 @@
 namespace Base\Core;
 
 /**
- * Class Session.
- * @package Base\Core
+ * Keeps state of the session.
  */
-class Session
+class BaseSession
 {
     /**
      * Session identifier.
      * @var string
      */
-    protected $sessionId;
+    protected string $sessionId;
 
     /**
      * Session time in seconds.
      * @var int
      */
-    protected $sessionTime = 3600;
+    protected int $sessionTime = 3600;
 
     /**
      * Domain for session.
-     * @var string|null
+     * @var ?string
      */
-    protected $domain = null;
+    protected ?string $domain;
 
     /**
      * Session constructor.
      * @param int $sessionTime
      *      Session time in seconds.
-     * @param string $domain
+     * @param string|null $domain
      *      Domain with dot at the beginning like ".example.com" will share session
      *      between all subdomains. Domain without dot at the beginning like "example.com",
      *      "subdomain.example.com" or null will limit session only to one specific domain.
@@ -54,7 +53,7 @@ class Session
      * Session identifier.
      * @return string
      */
-    public function sessionId()
+    public function sessionId(): string
     {
         return $this->sessionId;
     }
@@ -72,16 +71,9 @@ class Session
      * @param string $name
      * @return mixed
      */
-    public function get(string $name)
+    public function get(string $name): mixed
     {
-        if (isset($_SESSION[$name]))
-        {
-            return $_SESSION[$name];
-        }
-        else
-        {
-            return null;
-        }
+        return $_SESSION[$name] ?? null;
     }
 
     /**
@@ -89,7 +81,7 @@ class Session
      * @param string $name
      * @param mixed $value
      */
-    public function set(string $name, $value): void
+    public function set(string $name, mixed $value): void
     {
         $_SESSION[$name] = $value;
     }
@@ -117,14 +109,14 @@ class Session
      * Sets cookie.
      * @param string $name Name of cookie.
      * @param string $value Value of cookie.
-     * @param int $lifeTime Life time of cookie.
+     * @param int $lifetime Lifetime of cookie.
      * @param bool $currentDomainOnly
-     *      Allows to use cookie only for current domain
+     *      Allows using cookie only for current domain
      *      even if session was created for wildcard domain.
      */
-    public function setCookie(string $name, string $value, int $lifeTime = 31536000, bool $currentDomainOnly = false)
+    public function setCookie(string $name, string $value, int $lifetime = 31536000, bool $currentDomainOnly = false): void
     {
         $domain = $currentDomainOnly ? null : $this->domain;
-        setcookie($name, $value, time() + $lifeTime, '/', $domain);
+        setcookie($name, $value, time() + $lifetime, '/', $domain);
     }
 }

@@ -12,7 +12,6 @@ use Base\Http\HttpHeader;
 
 /**
  * Class Header represents HTTP header of incoming request.
- * @package Base\Http
  */
 class Header extends HttpHeader
 {
@@ -41,7 +40,7 @@ class Header extends HttpHeader
         {
             $exploded = explode("_", $key);
             $count = is_array($exploded) ? count($exploded) : 0;
-            if ($count < 2 || $exploded[0] != "HTTP")
+            if ($count < 2 || $exploded[0] !== 'HTTP')
             {
                 continue;
             }
@@ -52,6 +51,7 @@ class Header extends HttpHeader
                 $part = ucwords(mb_strtolower($part));
             }
 
+            unset($part);
             $headers[implode("-", $keyExploded)] = $value;
         }
 

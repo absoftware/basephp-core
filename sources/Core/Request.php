@@ -13,22 +13,20 @@ use Base\Exceptions\BadRequest;
 
 /**
  * Class Request delivers all information about request.
- * @package Base\Core
  */
 class Request extends HttpRequest
 {
     /**
      * Configuration of ports.
-     * @var Ports|null
+     * @var Ports
      */
-    protected $ports;
+    protected Ports $ports;
 
     /**
      * Request constructor.
      * @param Ports|null $ports
-     * @throws \Base\Exceptions\ArgumentException
      */
-    public function __construct(Ports $ports = null)
+    public function __construct(?Ports $ports = null)
     {
         $this->ports = $ports ?? new Ports();
         parent::__construct($this->url(), $this->method(), new Header());
@@ -49,12 +47,12 @@ class Request extends HttpRequest
      */
     public function isHttps(): bool
     {
-        if (!empty($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] == 'https')
+        if (!empty($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] === 'https')
         {
             return true;
         }
         
-        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
         {
             return true;
         }
@@ -73,7 +71,15 @@ class Request extends HttpRequest
      */
     function isAjax(): bool
     {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+    }
+
+    /**
+     * @return string
+     */
+    public function index(): string
+    {
+        return $this->protocol() . $this->host();
     }
 
     /**
@@ -215,9 +221,9 @@ class Request extends HttpRequest
      * Private method used to process GET and POST variables.
      * @param $array
      * @param $name
-     * @return array|float|null|string
+     * @return float|int|array|string|null
      */
-    private function getVariable($array, $name)
+    private function getVariable($array, $name): float|int|array|string|null
     {
         if (isset($array[$name]))
         {
@@ -226,47 +232,33 @@ class Request extends HttpRequest
                 $tmp = array();
                 foreach($array[$name] as $key => $val)
                 {
-                    if (((double)$val) === $val)
+                    if (((float)$val) === $val)
                     {
                         $tmp[$key] = (double)$val;
                     }
                     else
                     {
-                        $tmp[$key] = $this->escape(trim($val));
+                        $tmp[$key] = trim($val);
                     }
                 }
                 return $tmp;
             }
-            if (((double)$array[$name]) === $array[$name])
+            if (((float)$array[$name]) === $array[$name])
             {
                 return (double)$array[$name];
             }
-            return $this->escape(trim($array[$name]));
+            return trim($array[$name]);
         }
         return null;
-    }
-
-    /**
-     * Private method used to escape GET and POST variables.
-     * @param $string
-     * @return string
-     */
-    private function escape($string)
-    {
-        return get_magic_quotes_gpc() ? stripslashes($string) : $string;
     }
 
     /**
      * Gets cookie from request.
      * @param $name
-     * @return string
+     * @return string|null
      */
     public function cookie($name): ?string
     {
-        if (isset($_COOKIE[$name]))
-        {
-            return $_COOKIE[$name];
-        }
-        return null;
+        return $_COOKIE[$name] ?? null;
     }
 }

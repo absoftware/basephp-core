@@ -12,7 +12,6 @@ use Base\Exceptions\ArgumentException;
 
 /**
  * Class Route represents relation between path pattern and target controller and its methods.
- * @package Base\Core
  */
 class Route
 {
@@ -20,25 +19,25 @@ class Route
      * Allowed characters in parameter of path.
      * @var string
      */
-    protected $allowedParamCharacters = '[a-zA-Z0-9\_\-]+';
+    protected string $allowedParamCharacters = '[a-zA-Z0-9\_\-]+';
 
     /**
      * HTTP request method.
      * @var string
      */
-    protected $method;
+    protected string $method;
 
     /**
      * Path pattern.
      * @var string
      */
-    protected $pattern;
+    protected string $pattern;
 
     /**
      * Class name of controller and its methods in one string.
      * @var string
      */
-    protected $callback;
+    protected string $callback;
 
     /**
      * Route constructor.
@@ -63,7 +62,7 @@ class Route
      * Returns path pattern.
      * @return string Path pattern.
      */
-    public function pattern()
+    public function pattern(): string
     {
         return $this->pattern;
     }
@@ -72,7 +71,7 @@ class Route
      * Returns HTTP request method of route.
      * @return string HTTP request method.
      */
-    public function method()
+    public function method(): string
     {
         return $this->method;
     }
@@ -81,7 +80,7 @@ class Route
      * Returns callback of route.
      * @return string Callback which contains name of class and its method or methods.
      */
-    public function callback()
+    public function callback(): string
     {
         return $this->callback;
     }
@@ -92,7 +91,7 @@ class Route
      * @param bool $caseSensitive
      * @return string
      */
-    public function regex(string $patternPrefix = "", bool $caseSensitive = false)
+    public function regex(string $patternPrefix = "", bool $caseSensitive = false): string
     {
         // Replace "{parameter}" with "(?<parameter>[a-zA-Z0-9\_\-]+)".
         $regex = preg_replace(
@@ -116,9 +115,9 @@ class Route
      *      Returns matched parameters as array or false if path doesn't match to path pattern.
      *      Empty array means empty list of parameters.
      */
-    public function match(string $method, string $path, string $patternPrefix = "", bool $caseSensitive = false)
+    public function match(string $method, string $path, string $patternPrefix = "", bool $caseSensitive = false): bool|array
     {
-        if (!$method || $method != $this->method())
+        if (!$method || $method !== $this->method())
         {
             return false;
         }

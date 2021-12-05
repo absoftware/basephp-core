@@ -8,13 +8,13 @@
  */
 namespace Base\Core;
 
+use Base\Exceptions\ArgumentException;
 use Base\Exceptions\InternalError;
 use Base\Exceptions\NotFound;
 use Base\Http\HttpRequest;
 
 /**
  * Class RouteGroup represents route group with specified prefix, locales or authorization rules.
- * @package Base\Core
  */
 class RouteGroup
 {
@@ -22,19 +22,19 @@ class RouteGroup
      * Array of routes or route groups.
      * @var array
      */
-    protected $routes = [];
+    protected array $routes = [];
 
     /**
      * Pattern prefix.
      * @var string
      */
-    protected $patternPrefix = "";
+    protected string $patternPrefix = "";
 
     /**
      * Authorization ID.
      * @var string
      */
-    protected $authorizationId = "";
+    protected string $authorizationId = "";
 
     /**
      * RouteGroup constructor.
@@ -69,7 +69,7 @@ class RouteGroup
      * Adds route for DELETE requests.
      * @param string $pattern Path pattern.
      * @param string $callback Name of controller and its methods.
-     * @throws \Base\Exceptions\ArgumentException
+     * @throws ArgumentException
      */
     public function delete(string $pattern, string $callback): void
     {
@@ -80,7 +80,7 @@ class RouteGroup
      * Adds route for GET requests.
      * @param string $pattern Path pattern.
      * @param string $callback Name of controller and its methods.
-     * @throws \Base\Exceptions\ArgumentException
+     * @throws ArgumentException
      */
     public function get(string $pattern, string $callback): void
     {
@@ -91,7 +91,7 @@ class RouteGroup
      * Adds route for POST requests.
      * @param string $pattern Path pattern.
      * @param string $callback Name of controller and its methods.
-     * @throws \Base\Exceptions\ArgumentException
+     * @throws ArgumentException
      */
     public function post(string $pattern, string $callback): void
     {
@@ -102,7 +102,7 @@ class RouteGroup
      * Adds route for PUT requests.
      * @param string $pattern Path pattern.
      * @param string $callback Name of controller and its methods.
-     * @throws \Base\Exceptions\ArgumentException
+     * @throws ArgumentException
      */
     public function put(string $pattern, string $callback): void
     {
@@ -114,7 +114,7 @@ class RouteGroup
      * @param string $method HTTP request method.
      * @param string $pattern Path pattern.
      * @param string $callback Name of controller and its methods.
-     * @throws \Base\Exceptions\ArgumentException
+     * @throws ArgumentException
      */
     public function add(string $method, string $pattern, string $callback): void
     {
@@ -146,27 +146,21 @@ class RouteGroup
         $params = false;
 
         // Append authorization ID for this level.
-        if ($this->authorizationId)
-        {
+        if ($this->authorizationId) {
             $authorizationIds[] = $this->authorizationId;
         }
 
         // Find matching route.
         foreach ($this->routes as $routeItem)
         {
-            if ($routeItem instanceof Route)
-            {
+            if ($routeItem instanceof Route) {
                 $params = $routeItem->match($method, $path, $patternPrefix);
-                if (is_array($params))
-                {
+                if (is_array($params)) {
                     $route = $routeItem;
                     break;
                 }
-            }
-            else if ($routeItem instanceof RouteGroup)
-            {
-                try
-                {
+            } else if ($routeItem instanceof self) {
+                try {
                     return $routeItem->callbackInfo($method, $path, $patternPrefix, $authorizationIds);
                 }
                 catch (NotFound $exception)
@@ -177,8 +171,7 @@ class RouteGroup
         }
 
         // Return 404 if not found.
-        if (!$route)
-        {
+        if (!$route) {
             throw new NotFound("Path '{$path}' not found.");
         }
 
@@ -186,8 +179,7 @@ class RouteGroup
         $callbackInfo = new CallbackInfo($route->callback(), $params, $authorizationIds);
 
         // Validate callback of found route.
-        if (!$callbackInfo->isValid())
-        {
+        if (!$callbackInfo->isValid()) {
             throw new InternalError("Syntax error of callback '{$callbackInfo->callback()}'.");
         }
 
