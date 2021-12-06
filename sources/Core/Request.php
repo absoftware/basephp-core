@@ -79,7 +79,7 @@ class Request extends HttpRequest
      */
     public function index(): string
     {
-        return $this->protocol() . $this->host();
+        return $this->protocol() . $this->host() . '/';
     }
 
     /**
