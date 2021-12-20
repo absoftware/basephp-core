@@ -99,6 +99,17 @@ class RouteGroup
     }
 
     /**
+     * @param string $pattern
+     * @param string $callback
+     * @throws ArgumentException
+     */
+    public function form(string $pattern, string $callback): void
+    {
+        $this->add(HttpRequest::GET, $pattern, $callback);
+        $this->add(HttpRequest::POST, $pattern, $callback);
+    }
+
+    /**
      * Adds route for PUT requests.
      * @param string $pattern Path pattern.
      * @param string $callback Name of controller and its methods.
