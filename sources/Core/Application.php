@@ -8,7 +8,6 @@
  */
 namespace Base\Core;
 
-use Base\Exceptions\AuthorizationException;
 use Base\Exceptions\Exception;
 use Base\Exceptions\InternalError;
 use Base\Tools\Resolver;
@@ -24,25 +23,25 @@ class Application
      * Delegate of application must be implemented by client.
      * @var ApplicationDelegate
      */
-    protected $delegate;
+    protected ApplicationDelegate $delegate;
 
     /**
      * Instance of configuration. It must be delivered by client.
      * @var Config
      */
-    protected $config;
+    protected Config $config;
 
     /**
      * Session.
-     * @var Session
+     * @var Session|null
      */
-    protected $session;
+    protected ?Session $session;
 
     /**
      * Resolved controller.
      * @var Controller|null
      */
-    protected $controller = null;
+    protected ?Controller $controller = null;
 
     /**
      * Application constructor.
@@ -101,12 +100,12 @@ class Application
             $authorization->authorize($request, $this->session, $subpage, $visitor, $callbackInfo->authorizationIds());
 
             // Set defaults for resolver.
-            $resolver->setDefaultTypeValue("Base\\Core\\Authorization", $authorization);
-            $resolver->setDefaultTypeValue("Base\\Core\\Request", $request);
-            $resolver->setDefaultTypeValue("Base\\Core\\Session", $this->session);
-            $resolver->setDefaultTypeValue("Base\\Core\\Subpage", $subpage);
-            $resolver->setDefaultTypeValue("Base\\Core\\Visitor", $visitor);
-            $resolver->setDefaultTypeValue("Base\\Tools\\Resolver", $resolver);
+            $resolver->setDefaultTypeValue(Authorization::class, $authorization);
+            $resolver->setDefaultTypeValue(Request::class, $request);
+            $resolver->setDefaultTypeValue(Session::class, $this->session);
+            $resolver->setDefaultTypeValue(Subpage::class, $subpage);
+            $resolver->setDefaultTypeValue(Visitor::class, $visitor);
+            $resolver->setDefaultTypeValue(Resolver::class, $resolver);
 
             // Set common resources for controllers. It helps to create new controllers and views easily.
             Common::singleton()->set(Controller::COMMON_REQUEST, $request);
@@ -134,7 +133,7 @@ class Application
         }
         catch (Exception $exception)
         {
-            $response = $this->controller ? $this->controller->responseForException($exception) : null;
+            $response = $this->controller?->responseForException($exception);
             if (!$response) {
                 $response = $this->delegate->responseForException($request, $exception);
             }
@@ -142,7 +141,7 @@ class Application
         }
         catch (\Throwable $throwable)
         {
-            $response = $this->controller ? $this->controller->responseForThrowable($throwable) : null;
+            $response = $this->controller?->responseForThrowable($throwable);
             if (!$response) {
                 $response = $this->delegate->responseForThrowable($request, $throwable);
             }
